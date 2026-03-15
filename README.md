@@ -9,7 +9,7 @@
 
 > **Assista à apresentação completa da solução:**
 >
-> [![Watch the video](/home/enotari/Documents/sctec/sctecApp.png)](https://youtu.be/t0jomEHGy0E)
+> [![Watch the video](sctecApp.png)](https://youtu.be/t0jomEHGy0E)
 
 
 
