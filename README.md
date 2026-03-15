@@ -8,9 +8,7 @@ API REST para gerenciamento de empreendimentos em Santa Catarina, desenvolvida c
 
 A aplicação expõe uma API REST que permite cadastrar, listar, editar e remover registros de empreendimentos catarinenses. Os dados são persistidos em um banco SQLite local, sem necessidade de configuração de infraestrutura externa.
 
-Um **dashboard web** interativo é servido na rota raiz (`/`), permitindo o uso completo do CRUD por interface gráfica sem necessidade de ferramentas externas como Postman ou curl.
-
-A abordagem principal é **desenvolvimento de serviço (back-end)** com API REST em Flask, complementada por um **front-end web** integrado com Bootstrap 5.
+A abordagem escolhida foi **desenvolvimento de serviço (back-end)**, implementada como uma **API REST** com Flask.
 
 ---
 
@@ -22,8 +20,6 @@ A abordagem principal é **desenvolvimento de serviço (back-end)** com API REST
 | Flask | 3.0 | Framework web |
 | Flask-SQLAlchemy | 3.1 | ORM e persistência (SQLite) |
 | SQLite | — | Banco de dados (arquivo local) |
-| Bootstrap 5 | 5.3 (CDN) | Estilização do dashboard |
-| Bootstrap Icons | 1.11 (CDN) | Ícones do dashboard |
 
 ---
 
@@ -31,15 +27,13 @@ A abordagem principal é **desenvolvimento de serviço (back-end)** com API REST
 
 ```
 sctecIAdev/
-├── app.py                    # Fábrica da aplicação Flask e ponto de entrada
-├── models.py                 # Modelo de dados (Empreendimento) e constantes de validação
-├── routes.py                 # Blueprint com todos os endpoints CRUD
-├── requirements.txt          # Dependências Python
-├── README.md                 # Esta documentação
-├── templates/
-│   └── index.html            # Dashboard web (HTML + Bootstrap 5 + JS)
+├── app.py            # Fábrica da aplicação Flask e ponto de entrada
+├── models.py         # Modelo de dados (Empreendimento) e constantes de validação
+├── routes.py         # Blueprint com todos os endpoints CRUD
+├── requirements.txt  # Dependências Python
+├── README.md         # Esta documentação
 └── instance/
-    └── empreendimentos.db    # Banco SQLite (gerado automaticamente)
+    └── empreendimentos.db  # Banco SQLite (gerado automaticamente)
 ```
 
 ---
@@ -96,28 +90,16 @@ python app.py
 
 A API ficará disponível em `http://localhost:5000`.
 
-**Acesse o dashboard pelo navegador em `http://localhost:5000`.**
-
 O banco de dados SQLite (`instance/empreendimentos.db`) é criado automaticamente na primeira execução.
 
 ---
 
 ## Endpoints da API
 
-### Dashboard (interface gráfica)
+### Informações gerais
 
 ```
 GET /
-```
-
-Abre o painel de gerenciamento no navegador. Permite realizar todas as operações de CRUD sem uso de ferramentas externas.
-
----
-
-### Informações da API
-
-```
-GET /api
 ```
 
 Retorna metadados da API e lista de endpoints disponíveis.

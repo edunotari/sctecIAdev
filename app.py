@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify
 from models import db
 from routes import bp
 
@@ -21,14 +21,9 @@ def create_app(config=None):
 
     app.register_blueprint(bp)
 
-    # Dashboard (interface gráfica)
+    # Rota raiz com informações da API
     @app.route("/")
     def index():
-        return render_template("index.html")
-
-    # Informações da API em JSON
-    @app.route("/api")
-    def api_info():
         return jsonify(
             {
                 "api": "Empreendimentos SC",
