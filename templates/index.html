@@ -560,6 +560,24 @@
     padding-bottom:.3rem;margin-bottom:.9rem;margin-top:.5rem;
   }
 
+  /* Sector-specific sub-sections (conditional) */
+  .sec-setor{display:none;animation:sec-in .3s ease-out both;}
+  @keyframes sec-in{
+    from{opacity:0;transform:translateY(-8px);}
+    to{opacity:1;transform:none;}
+  }
+  .sec-setor-header{
+    font-family:'Share Tech Mono',monospace;font-size:.6rem;
+    letter-spacing:.12em;padding:.3rem .7rem;
+    border-radius:4px;margin-bottom:.9rem;margin-top:.5rem;
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .sec-tec .sec-setor-header{color:var(--cyan);  background:rgba(0,240,255,.07); border-left:3px solid var(--cyan);}
+  .sec-com .sec-setor-header{color:var(--magenta);background:rgba(255,0,110,.07);border-left:3px solid var(--magenta);}
+  .sec-ind .sec-setor-header{color:var(--yellow); background:rgba(245,255,0,.06);border-left:3px solid var(--yellow);}
+  .sec-serv .sec-setor-header{color:var(--green); background:rgba(0,255,157,.06);border-left:3px solid var(--green);}
+  .sec-agro .sec-setor-header{color:var(--purple);background:rgba(176,0,255,.07);border-left:3px solid var(--purple);}
+
   /* Char counter */
   .char-counter{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-dim);text-align:right;}
 
@@ -965,8 +983,8 @@
         <form id="form-emp" novalidate>
           <input type="hidden" id="f-id"/>
 
-          <!-- Bloco 1: Identificação -->
-          <div class="modal-section">&#47;&#47; 01 IDENTIFICAÇÃO</div>
+          <!-- ── 01 IDENTIFICAÇÃO BÁSICA ── -->
+          <div class="modal-section">&#47;&#47; 01 IDENTIFICAÇÃO BÁSICA <span style="color:var(--red);">* OBRIGATÓRIO</span></div>
           <div class="row g-3 mb-3">
             <div class="col-12 col-md-7">
               <label class="form-label-cyber">NOME DO EMPREENDIMENTO <span class="req">*</span></label>
@@ -982,9 +1000,6 @@
               </select>
             </div>
           </div>
-
-          <!-- Bloco 2: Responsável -->
-          <div class="modal-section">&#47;&#47; 02 RESPONSÁVEL &amp; CONTATO</div>
           <div class="row g-3 mb-3">
             <div class="col-12 col-md-6">
               <label class="form-label-cyber">NOME DO(A) EMPREENDEDOR(A) <span class="req">*</span></label>
@@ -999,9 +1014,6 @@
               <div class="invalid-feedback">Campo obrigatório.</div>
             </div>
           </div>
-
-          <!-- Bloco 3: Localização / Segmento -->
-          <div class="modal-section">&#47;&#47; 03 LOCALIZAÇÃO &amp; SEGMENTO</div>
           <div class="row g-3 mb-3">
             <div class="col-12 col-md-5">
               <label class="form-label-cyber">MUNICÍPIO — SANTA CATARINA <span class="req">*</span></label>
@@ -1023,7 +1035,7 @@
             </div>
             <div class="col-12 col-md-4">
               <label class="form-label-cyber">SEGMENTO DE ATUAÇÃO <span class="req">*</span></label>
-              <select id="f-segmento-form" class="form-select cyber" required>
+              <select id="f-segmento-form" class="form-select cyber" required onchange="atualizarSecSetor(this.value)">
                 <option value="" disabled selected>// selecione…</option>
                 <option>Tecnologia</option>
                 <option>Comércio</option>
@@ -1039,8 +1051,271 @@
             </div>
           </div>
 
-          <!-- Bloco 4: Descrição -->
-          <div class="modal-section">&#47;&#47; 04 DESCRIÇÃO</div>
+          <!-- ── 02 IDENTIFICAÇÃO E LOCALIZAÇÃO ── -->
+          <div class="modal-section">&#47;&#47; 02 IDENTIFICAÇÃO E LOCALIZAÇÃO</div>
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label-cyber">RAZÃO SOCIAL</label>
+              <input id="f-razao-social" type="text" class="form-control cyber" maxlength="200"
+                     placeholder="Ex.: TechFloripa Soluções Ltda."/>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label-cyber">NOME FANTASIA</label>
+              <input id="f-nome-fantasia" type="text" class="form-control cyber" maxlength="200"
+                     placeholder="Ex.: TechFloripa"/>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-4">
+              <label class="form-label-cyber">CNPJ</label>
+              <input id="f-cnpj" type="text" class="form-control cyber" maxlength="20"
+                     placeholder="XX.XXX.XXX/XXXX-XX"/>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label-cyber">DATA DE ABERTURA</label>
+              <input id="f-data-abertura" type="date" class="form-control cyber"/>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label-cyber">TIPO DE UNIDADE</label>
+              <select id="f-tipo-unidade" class="form-select cyber">
+                <option value="">// selecione…</option>
+                <option value="Matriz">Matriz</option>
+                <option value="Filial">Filial</option>
+              </select>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-4">
+              <label class="form-label-cyber">INSCRIÇÃO ESTADUAL (IE)</label>
+              <input id="f-ie" type="text" class="form-control cyber" maxlength="50"
+                     placeholder="Ex.: 123.456.789"/>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label-cyber">INSCRIÇÃO MUNICIPAL (IM)</label>
+              <input id="f-im" type="text" class="form-control cyber" maxlength="50"
+                     placeholder="Ex.: 12345-6"/>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label-cyber">TELEFONE COMERCIAL / WHATSAPP</label>
+              <input id="f-telefone" type="text" class="form-control cyber" maxlength="50"
+                     placeholder="Ex.: (48) 99999-0000"/>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label-cyber">E-MAIL PARA NOTAS FISCAIS (NFe)</label>
+              <input id="f-email-nfe" type="text" class="form-control cyber" maxlength="200"
+                     placeholder="Ex.: fiscal@empresa.sc.br"/>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label-cyber">RESPONSÁVEL PELO CADASTRO</label>
+              <input id="f-responsavel" type="text" class="form-control cyber" maxlength="200"
+                     placeholder="Ex.: Carlos Administrativo"/>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label-cyber">ENDEREÇO COMPLETO (Rua, Número, Bairro, Cidade, CEP)</label>
+              <input id="f-endereco" type="text" class="form-control cyber" maxlength="500"
+                     placeholder="Ex.: Rua das Flores, 123 — Centro — Florianópolis/SC — CEP 88000-000"/>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label-cyber">LINK GOOGLE MAPS / COORDENADAS GEOGRÁFICAS</label>
+              <input id="f-link-maps" type="text" class="form-control cyber" maxlength="500"
+                     placeholder="Ex.: https://maps.google.com/... ou -27.5954, -48.5480"/>
+            </div>
+          </div>
+
+          <!-- ── 03 DADOS FISCAIS, FINANCEIROS E SOCIETÁRIOS ── -->
+          <div class="modal-section">&#47;&#47; 03 DADOS FISCAIS, FINANCEIROS E SOCIETÁRIOS</div>
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label-cyber">REGIME TRIBUTÁRIO</label>
+              <select id="f-regime" class="form-select cyber">
+                <option value="">// selecione…</option>
+                <option value="Simples Nacional">Simples Nacional</option>
+                <option value="Lucro Presumido">Lucro Presumido</option>
+                <option value="Lucro Real">Lucro Real</option>
+                <option value="MEI">MEI</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label-cyber">CNAE PRINCIPAL</label>
+              <input id="f-cnae" type="text" class="form-control cyber" maxlength="30"
+                     placeholder="Ex.: 6201-5/01 — Desenvolvimento de programas"/>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-5">
+              <label class="form-label-cyber">FATURAMENTO MÉDIO ANUAL/MENSAL</label>
+              <input id="f-faturamento" type="text" class="form-control cyber" maxlength="100"
+                     placeholder="Ex.: R$ 500.000,00 / ano"/>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label-cyber">CAPITAL SOCIAL</label>
+              <input id="f-capital" type="text" class="form-control cyber" maxlength="100"
+                     placeholder="Ex.: R$ 100.000,00"/>
+            </div>
+            <div class="col-12 col-md-3">
+              <label class="form-label-cyber">VERIFICAÇÃO DE PEP</label>
+              <select id="f-pep" class="form-select cyber">
+                <option value="">// selecione…</option>
+                <option value="Não">Não</option>
+                <option value="Sim">Sim</option>
+                <option value="Não verificado">Não verificado</option>
+              </select>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label-cyber">PRAZO MÉDIO DE PAGAMENTO / RECEBIMENTO</label>
+              <input id="f-prazo" type="text" class="form-control cyber" maxlength="100"
+                     placeholder="Ex.: Pagamento 30 dias / Recebimento 15 dias"/>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label-cyber">DADOS BANCÁRIOS (Banco, Agência, Conta Corrente)</label>
+              <input id="f-banco" type="text" class="form-control cyber" maxlength="300"
+                     placeholder="Ex.: Banco do Brasil — Ag. 1234-5 — CC 00001-2"/>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label-cyber">QUADRO DE SÓCIOS E ADMINISTRADORES (QSA) — Nomes e CPFs</label>
+              <textarea id="f-qsa" class="form-control cyber" rows="2"
+                placeholder="Ex.: João da Silva — CPF 000.000.000-00 — 50%&#10;Maria Souza — CPF 111.111.111-11 — 50%"></textarea>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label-cyber">CERTIDÕES NEGATIVAS (FGTS, Receita Federal, Trabalhista)</label>
+              <textarea id="f-certidoes" class="form-control cyber" rows="2"
+                placeholder="Ex.: FGTS — válida até 01/12/2025&#10;Receita Federal — válida até 15/11/2025"></textarea>
+            </div>
+          </div>
+
+          <!-- ── 04 CAMPOS ESPECÍFICOS DO SETOR ── -->
+          <div class="modal-section">&#47;&#47; 04 CAMPOS ESPECÍFICOS DO SETOR
+            <span id="sec-setor-hint" style="color:var(--text-dim);font-size:.55rem;margin-left:.5rem;">
+              — selecione o segmento no bloco 01 para habilitar
+            </span>
+          </div>
+
+          <!-- Tecnologia -->
+          <div id="sec-tec" class="sec-setor sec-tec">
+            <div class="sec-setor-header"><i class="bi bi-cpu-fill"></i> TECNOLOGIA</div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">NÍVEL DE SEGURANÇA DA INFORMAÇÃO / LGPD</label>
+                <textarea id="f-tec-lgpd" class="form-control cyber" rows="2"
+                  placeholder="Ex.: Certificação ISO 27001, DPO nomeado, LGPD compliance…"></textarea>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">STACK TECNOLÓGICA E LICENÇAS DE SOFTWARE</label>
+                <textarea id="f-tec-stack" class="form-control cyber" rows="2"
+                  placeholder="Ex.: Python, React, AWS — Licenças: Microsoft 365, GitHub Enterprise…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comércio -->
+          <div id="sec-com" class="sec-setor sec-com">
+            <div class="sec-setor-header"><i class="bi bi-shop-window"></i> COMÉRCIO</div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">REGIME DE SUBSTITUIÇÃO TRIBUTÁRIA (ST)</label>
+                <textarea id="f-com-st" class="form-control cyber" rows="2"
+                  placeholder="Ex.: Contribuinte substituto — ICMS-ST aplicado em: eletrônicos, vestuário…"></textarea>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">LOGÍSTICA (Horários de Carga/Descarga e Transportadoras)</label>
+                <textarea id="f-com-log" class="form-control cyber" rows="2"
+                  placeholder="Ex.: Recebimento 08h-17h — Transportadoras: Correios, Jadlog, transportadora própria…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Indústria -->
+          <div id="sec-ind" class="sec-setor sec-ind">
+            <div class="sec-setor-header"><i class="bi bi-gear-wide-connected"></i> INDÚSTRIA</div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">LICENÇAS AMBIENTAIS (IAP/IBAMA) E CERTIFICAÇÕES ISO</label>
+                <textarea id="f-ind-lic" class="form-control cyber" rows="2"
+                  placeholder="Ex.: LO nº 1234/2024 — FATMA — ISO 9001:2015 — Vencimento: 12/2026…"></textarea>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">CAPACIDADE DE PRODUÇÃO MENSAL E ORIGEM DE MATÉRIA-PRIMA</label>
+                <textarea id="f-ind-cap" class="form-control cyber" rows="2"
+                  placeholder="Ex.: 500 toneladas/mês — Matéria-prima: aço nacional (70%), importado (30%)…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Serviços -->
+          <div id="sec-serv" class="sec-setor sec-serv">
+            <div class="sec-setor-header"><i class="bi bi-briefcase-fill"></i> SERVIÇOS</div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">REGISTRO EM CONSELHOS DE CLASSE (CREA, CRM, OAB, etc.)</label>
+                <textarea id="f-serv-cons" class="form-control cyber" rows="2"
+                  placeholder="Ex.: CREA/SC nº 12345 — OAB/SC nº 67890 — CRM/SC nº 11111…"></textarea>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">PORTFÓLIO DE CASES E SEGURO DE RESPONSABILIDADE CIVIL</label>
+                <textarea id="f-serv-port" class="form-control cyber" rows="2"
+                  placeholder="Ex.: Website: portfolio.sc.br — Seguro RC: Allianz — Apólice nº 9876…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Agronegócio -->
+          <div id="sec-agro" class="sec-setor sec-agro">
+            <div class="sec-setor-header"><i class="bi bi-tree-fill"></i> AGRONEGÓCIO</div>
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-md-5">
+                <label class="form-label-cyber">NÚMERO DO CAR (CADASTRO AMBIENTAL RURAL)</label>
+                <input id="f-agro-car" type="text" class="form-control cyber" maxlength="100"
+                       placeholder="Ex.: SC-4200000-XXXX…"/>
+              </div>
+              <div class="col-12 col-md-7">
+                <label class="form-label-cyber">REGISTRO NO MINISTÉRIO DA AGRICULTURA (MAPA)</label>
+                <input id="f-agro-mapa" type="text" class="form-control cyber" maxlength="200"
+                       placeholder="Ex.: Registro MAPA nº 12345/SC"/>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-12">
+                <label class="form-label-cyber">CAPACIDADE DE ARMAZENAGEM E LOGÍSTICA RURAL</label>
+                <textarea id="f-agro-arm" class="form-control cyber" rows="2"
+                  placeholder="Ex.: 1.000 ton/silo — Câmara fria 200m³ — Frota própria 3 caminhões…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── 05 DOCUMENTAÇÃO DE APOIO ── -->
+          <div class="modal-section">&#47;&#47; 05 DOCUMENTAÇÃO DE APOIO</div>
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label class="form-label-cyber">CHECKLIST DE DOCUMENTOS</label>
+              <textarea id="f-checklist" class="form-control cyber" rows="3"
+                placeholder="Ex.:&#10;[x] Cópia do Cartão CNPJ&#10;[x] Contrato Social / Requerimento de Empresário&#10;[ ] Comprovante de Endereço&#10;[ ] Documentos dos Sócios"></textarea>
+            </div>
+          </div>
+
+          <!-- ── 06 DESCRIÇÃO LIVRE ── -->
+          <div class="modal-section">&#47;&#47; 06 DESCRIÇÃO LIVRE</div>
           <div class="mb-1">
             <textarea id="f-descricao" class="form-control cyber" rows="3" maxlength="1000"
               placeholder="Descreva o empreendimento: produtos, diferenciais, missão…"></textarea>
@@ -1340,16 +1615,64 @@ async function abrirModalEditar(id){
   limparForm(); setLoading(true);
   try{
     const e=await fetch(`/api/empreendimentos/${id}`).then(r=>r.json());
-    document.getElementById('f-id').value            =e.id;
-    document.getElementById('f-nome').value          =e.nome;
-    document.getElementById('f-empreendedor').value  =e.empreendedor;
-    document.getElementById('f-municipio').value     =e.municipio;
-    document.getElementById('f-segmento-form').value =e.segmento;
-    document.getElementById('f-contato').value       =e.contato;
-    document.getElementById('f-status-form').value   =e.status;
-    document.getElementById('f-descricao').value     =e.descricao||'';
-    document.getElementById('f-data-fundacao').value =e.data_fundacao||'';
+    const set=(elId,val)=>{ const el=document.getElementById(elId); if(el) el.value=val||''; };
+
+    // obrigatórios
+    set('f-id',           e.id);
+    set('f-nome',         e.nome);
+    set('f-empreendedor', e.empreendedor);
+    set('f-municipio',    e.municipio);
+    set('f-contato',      e.contato);
+    set('f-data-fundacao',e.data_fundacao);
+    document.getElementById('f-segmento-form').value = e.segmento||'';
+    document.getElementById('f-status-form').value   = e.status||'ativo';
+
+    // identificação e localização
+    set('f-razao-social',  e.razao_social);
+    set('f-nome-fantasia', e.nome_fantasia);
+    set('f-cnpj',          e.cnpj);
+    set('f-data-abertura', e.data_abertura);
+    set('f-ie',            e.inscricao_estadual);
+    set('f-im',            e.inscricao_municipal);
+    set('f-telefone',      e.telefone);
+    set('f-email-nfe',     e.email_nfe);
+    set('f-responsavel',   e.responsavel_cadastro);
+    set('f-endereco',      e.endereco);
+    set('f-link-maps',     e.link_maps);
+    document.getElementById('f-tipo-unidade').value = e.tipo_unidade||'';
+
+    // fiscal
+    document.getElementById('f-regime').value = e.regime_tributario||'';
+    document.getElementById('f-pep').value    = e.verificacao_pep||'';
+    set('f-cnae',      e.cnae);
+    set('f-faturamento',e.faturamento_medio);
+    set('f-capital',   e.capital_social);
+    set('f-prazo',     e.prazo_pagamento);
+    set('f-banco',     e.dados_bancarios);
+    set('f-qsa',       e.qsa);
+    set('f-certidoes', e.certidoes_negativas);
+
+    // setor
+    set('f-tec-lgpd',   e.tec_seguranca_lgpd);
+    set('f-tec-stack',  e.tec_stack);
+    set('f-com-st',     e.com_subst_tributaria);
+    set('f-com-log',    e.com_logistica);
+    set('f-ind-lic',    e.ind_licencas);
+    set('f-ind-cap',    e.ind_capacidade);
+    set('f-serv-cons',  e.serv_conselhos);
+    set('f-serv-port',  e.serv_portfolio);
+    set('f-agro-car',   e.agro_car);
+    set('f-agro-mapa',  e.agro_armazenagem);
+    set('f-agro-arm',   e.agro_armazenagem);
+
+    // documentação e descrição
+    set('f-checklist', e.checklist_docs);
+    set('f-descricao', e.descricao);
     document.getElementById('char-count').textContent=(e.descricao||'').length;
+
+    // mostrar seção condicional do setor
+    atualizarSecSetor(e.segmento);
+
     _modalDetalhe.hide(); _modalEmp.show();
   }catch{ mostrarToast('Erro ao carregar dados.','err'); }
   finally{ setLoading(false); }
@@ -1368,17 +1691,62 @@ async function salvar(){
   if(!seg.value) valido=false;
   if(!valido) return;
 
-  const id=document.getElementById('f-id').value;
+  const v  =id=>document.getElementById(id)?.value.trim()||null;
+  const vs =id=>document.getElementById(id)?.value||null;
+  const id =document.getElementById('f-id').value;
+
   const payload={
-    nome:         document.getElementById('f-nome').value.trim(),
-    empreendedor: document.getElementById('f-empreendedor').value.trim(),
-    municipio:    document.getElementById('f-municipio').value.trim(),
-    segmento:     document.getElementById('f-segmento-form').value,
-    contato:      document.getElementById('f-contato').value.trim(),
-    status:       document.getElementById('f-status-form').value,
-    descricao:    document.getElementById('f-descricao').value.trim(),
-    data_fundacao:document.getElementById('f-data-fundacao').value||null,
+    // obrigatórios
+    nome:         v('f-nome'),
+    empreendedor: v('f-empreendedor'),
+    municipio:    v('f-municipio'),
+    segmento:     vs('f-segmento-form'),
+    contato:      v('f-contato'),
+    status:       vs('f-status-form'),
+    data_fundacao:vs('f-data-fundacao'),
+    // identificação e localização
+    razao_social:        v('f-razao-social'),
+    nome_fantasia:       v('f-nome-fantasia'),
+    cnpj:                v('f-cnpj'),
+    data_abertura:       vs('f-data-abertura'),
+    inscricao_estadual:  v('f-ie'),
+    inscricao_municipal: v('f-im'),
+    telefone:            v('f-telefone'),
+    email_nfe:           v('f-email-nfe'),
+    responsavel_cadastro:v('f-responsavel'),
+    endereco:            v('f-endereco'),
+    link_maps:           v('f-link-maps'),
+    tipo_unidade:        vs('f-tipo-unidade'),
+    // fiscal
+    regime_tributario:  vs('f-regime'),
+    cnae:               v('f-cnae'),
+    faturamento_medio:  v('f-faturamento'),
+    capital_social:     v('f-capital'),
+    verificacao_pep:    vs('f-pep'),
+    prazo_pagamento:    v('f-prazo'),
+    dados_bancarios:    v('f-banco'),
+    qsa:                v('f-qsa'),
+    certidoes_negativas:v('f-certidoes'),
+    // setor — Tecnologia
+    tec_seguranca_lgpd: v('f-tec-lgpd'),
+    tec_stack:          v('f-tec-stack'),
+    // setor — Comércio
+    com_subst_tributaria:v('f-com-st'),
+    com_logistica:       v('f-com-log'),
+    // setor — Indústria
+    ind_licencas:  v('f-ind-lic'),
+    ind_capacidade:v('f-ind-cap'),
+    // setor — Serviços
+    serv_conselhos:v('f-serv-cons'),
+    serv_portfolio: v('f-serv-port'),
+    // setor — Agronegócio
+    agro_car:       v('f-agro-car'),
+    agro_armazenagem:v('f-agro-arm'),
+    // documentação e descrição
+    checklist_docs: v('f-checklist'),
+    descricao:      v('f-descricao'),
   };
+
   const btn=document.getElementById('btn-salvar');
   btn.disabled=true;
   try{
@@ -1403,27 +1771,129 @@ async function verDetalhe(id){
   setLoading(true);
   try{
     const e=await fetch(`/api/empreendimentos/${id}`).then(r=>r.json());
+    const has=v=>v&&v.trim&&v.trim()||v;
+
+    // helper: bloco de campo com label + valor
+    const dSec=(titulo,cor)=>`
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:${cor};
+           letter-spacing:.1em;border-left:3px solid ${cor};padding:.2rem .6rem;
+           background:${cor}12;margin:1rem 0 .6rem;border-radius:0 4px 4px 0;">
+        ${titulo}</div>`;
+
+    // setor-specific block builder
+    const setorInfo=()=>{
+      const seg=e.segmento;
+      if(seg==='Tecnologia') return `
+        ${dSec('// TECNOLOGIA','var(--cyan)')}
+        <div class="row g-2 mb-2">
+          ${has(e.tec_seguranca_lgpd)?dField('SEG. INFORMAÇÃO / LGPD','shield-fill-check',esc(e.tec_seguranca_lgpd)):''}
+          ${has(e.tec_stack)?dField('STACK / LICENÇAS','code-slash',esc(e.tec_stack)):''}
+        </div>`;
+      if(seg==='Comércio') return `
+        ${dSec('// COMÉRCIO','var(--magenta)')}
+        <div class="row g-2 mb-2">
+          ${has(e.com_subst_tributaria)?dField('SUBST. TRIBUTÁRIA (ST)','receipt',esc(e.com_subst_tributaria)):''}
+          ${has(e.com_logistica)?dField('LOGÍSTICA','truck',esc(e.com_logistica)):''}
+        </div>`;
+      if(seg==='Indústria') return `
+        ${dSec('// INDÚSTRIA','var(--yellow)')}
+        <div class="row g-2 mb-2">
+          ${has(e.ind_licencas)?dField('LICENÇAS AMBIENTAIS / ISO','patch-check',esc(e.ind_licencas)):''}
+          ${has(e.ind_capacidade)?dField('CAPACIDADE / MATÉRIA-PRIMA','bar-chart-line',esc(e.ind_capacidade)):''}
+        </div>`;
+      if(seg==='Serviços') return `
+        ${dSec('// SERVIÇOS','var(--green)')}
+        <div class="row g-2 mb-2">
+          ${has(e.serv_conselhos)?dField('CONSELHOS DE CLASSE','award',esc(e.serv_conselhos)):''}
+          ${has(e.serv_portfolio)?dField('PORTFÓLIO / SEGURO RC','collection',esc(e.serv_portfolio)):''}
+        </div>`;
+      if(seg==='Agronegócio') return `
+        ${dSec('// AGRONEGÓCIO','var(--purple)')}
+        <div class="row g-2 mb-2">
+          ${has(e.agro_car)?dField('Nº CAR','tree',esc(e.agro_car)):''}
+          ${has(e.agro_armazenagem)?dField('ARMAZENAGEM / LOGÍSTICA','box-seam',esc(e.agro_armazenagem)):''}
+        </div>`;
+      return '';
+    };
+
     document.getElementById('detalhe-body').innerHTML=`
-      <div class="d-flex align-items-start gap-3 mb-4">
+      <!-- cabeçalho -->
+      <div class="d-flex align-items-start gap-3 mb-3">
         <div class="detail-icon">${segEmoji(e.segmento)}</div>
         <div>
           <div style="font-family:'Orbitron',sans-serif;font-size:.9rem;color:#fff;font-weight:700;">${esc(e.nome)}</div>
+          ${has(e.razao_social)?`<div style="font-size:.75rem;color:var(--text-dim);font-family:'Share Tech Mono',monospace;">${esc(e.razao_social)}</div>`:''}
           <div class="mt-1 d-flex gap-2 flex-wrap">
             <span class="seg seg-${e.segmento}">${esc(e.segmento)}</span>
             <span class="status-${e.status}">${e.status==='ativo'?'● ATIVO':'○ INATIVO'}</span>
+            ${has(e.tipo_unidade)?`<span style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--yellow);border:1px solid rgba(245,255,0,.3);border-radius:4px;padding:.15rem .5rem;">${esc(e.tipo_unidade)}</span>`:''}
           </div>
         </div>
       </div>
-      <div class="row g-3 mb-3">
+
+      <!-- 01 identificação -->
+      ${dSec('// 01 IDENTIFICAÇÃO BÁSICA','var(--cyan)')}
+      <div class="row g-2 mb-2">
         ${dField('EMPREENDEDOR(A)','person-fill',esc(e.empreendedor))}
         ${dField('MUNICÍPIO','geo-alt-fill',esc(e.municipio))}
-        ${dField('CONTATO','envelope-fill',`<a href="mailto:${esc(e.contato)}" style="color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.8rem;">${esc(e.contato)}</a>`)}
-        ${e.data_fundacao?dField('FUNDAÇÃO','calendar-fill',fmtData(e.data_fundacao)):''}
+        ${dField('CONTATO','envelope-fill',`<a href="mailto:${esc(e.contato)}" style="color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.78rem;">${esc(e.contato)}</a>`)}
+        ${has(e.telefone)?dField('TELEFONE / WHATSAPP','telephone-fill',esc(e.telefone)):''}
+        ${has(e.data_fundacao)?dField('FUNDAÇÃO','calendar-fill',fmtData(e.data_fundacao)):''}
+        ${has(e.data_abertura)?dField('ABERTURA','calendar2-check',fmtData(e.data_abertura)):''}
       </div>
-      ${e.descricao?`<div class="detail-desc">${esc(e.descricao)}</div>`:''}
+
+      <!-- 02 identificação e localização -->
+      ${(has(e.cnpj)||has(e.inscricao_estadual)||has(e.endereco)||has(e.email_nfe))?`
+      ${dSec('// 02 IDENTIFICAÇÃO E LOCALIZAÇÃO','var(--cyan)')}
+      <div class="row g-2 mb-2">
+        ${has(e.cnpj)?dField('CNPJ','building',esc(e.cnpj)):''}
+        ${has(e.inscricao_estadual)?dField('INSCRIÇÃO ESTADUAL (IE)','card-list',esc(e.inscricao_estadual)):''}
+        ${has(e.inscricao_municipal)?dField('INSCRIÇÃO MUNICIPAL (IM)','card-text',esc(e.inscricao_municipal)):''}
+        ${has(e.responsavel_cadastro)?dField('RESPONSÁVEL CADASTRO','person-badge',esc(e.responsavel_cadastro)):''}
+        ${has(e.email_nfe)?dField('E-MAIL NFe','send-fill',esc(e.email_nfe)):''}
+      </div>
+      ${has(e.endereco)?`<div style="background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:6px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:.5rem;">
+        <small style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--text-dim);display:block;margin-bottom:.2rem;"><i class="bi bi-pin-map-fill"></i> ENDEREÇO</small>
+        ${esc(e.endereco)}
+        ${has(e.link_maps)?`<br><a href="${esc(e.link_maps)}" target="_blank" style="color:var(--cyan);font-size:.75rem;">
+          <i class="bi bi-map-fill"></i> Ver no Maps</a>`:''}
+      </div>`:''}
+      `:''}
+
+      <!-- 03 fiscal / financeiro -->
+      ${(has(e.regime_tributario)||has(e.cnae)||has(e.faturamento_medio)||has(e.qsa))?`
+      ${dSec('// 03 DADOS FISCAIS, FINANCEIROS E SOCIETÁRIOS','var(--magenta)')}
+      <div class="row g-2 mb-2">
+        ${has(e.regime_tributario)?dField('REGIME TRIBUTÁRIO','file-earmark-text',esc(e.regime_tributario)):''}
+        ${has(e.cnae)?dField('CNAE PRINCIPAL','diagram-3',esc(e.cnae)):''}
+        ${has(e.faturamento_medio)?dField('FATURAMENTO MÉDIO','graph-up-arrow',esc(e.faturamento_medio)):''}
+        ${has(e.capital_social)?dField('CAPITAL SOCIAL','currency-dollar',esc(e.capital_social)):''}
+        ${has(e.prazo_pagamento)?dField('PRAZO PAGTO/RECEBTO','clock-history',esc(e.prazo_pagamento)):''}
+        ${has(e.verificacao_pep)?dField('VERIFICAÇÃO PEP','shield-exclamation',esc(e.verificacao_pep)):''}
+        ${has(e.dados_bancarios)?dField('DADOS BANCÁRIOS','bank',esc(e.dados_bancarios)):''}
+      </div>
+      ${has(e.qsa)?`<div class="detail-desc" style="margin-bottom:.5rem;"><small style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--text-dim);display:block;"><i class="bi bi-people-fill"></i> QSA — QUADRO DE SÓCIOS</small>${esc(e.qsa)}</div>`:''}
+      ${has(e.certidoes_negativas)?`<div class="detail-desc"><small style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--text-dim);display:block;"><i class="bi bi-patch-check-fill"></i> CERTIDÕES NEGATIVAS</small>${esc(e.certidoes_negativas)}</div>`:''}
+      `:''}
+
+      <!-- 04 setor específico -->
+      ${setorInfo()}
+
+      <!-- 05 documentação -->
+      ${has(e.checklist_docs)?`
+      ${dSec('// 05 DOCUMENTAÇÃO DE APOIO','var(--green)')}
+      <div class="detail-desc" style="white-space:pre-line;">${esc(e.checklist_docs)}</div>`:''}
+
+      <!-- 06 descrição -->
+      ${has(e.descricao)?`
+      ${dSec('// 06 DESCRIÇÃO LIVRE','var(--text-dim)')}
+      <div class="detail-desc">${esc(e.descricao)}</div>`:''}
+
+      <!-- meta -->
       <div class="detail-meta">
         CADASTRO: ${fmtDt(e.created_at)} &nbsp;|&nbsp; ATUALIZAÇÃO: ${fmtDt(e.updated_at)} &nbsp;|&nbsp; ID: ${String(e.id).padStart(4,'0')}
       </div>`;
+
     document.getElementById('btn-detalhe-editar').onclick=()=>abrirModalEditar(e.id);
     _modalDetalhe.show();
   }catch{mostrarToast('Erro ao carregar detalhes.','err');}
@@ -1433,6 +1903,26 @@ function dField(lbl,icon,val){
   return `<div class="col-12 col-md-6 detail-field">
     <small><i class="bi bi-${icon}"></i> ${lbl}</small>
     <div>${val}</div></div>`;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SETOR CONDICIONAL
+───────────────────────────────────────────────────────────── */
+function atualizarSecSetor(seg){
+  const mapa={'Tecnologia':'sec-tec','Comércio':'sec-com',
+              'Indústria':'sec-ind','Serviços':'sec-serv','Agronegócio':'sec-agro'};
+  Object.values(mapa).forEach(sid=>{
+    const el=document.getElementById(sid);
+    if(el){ el.style.display='none'; }
+  });
+  const hint=document.getElementById('sec-setor-hint');
+  if(seg && mapa[seg]){
+    const el=document.getElementById(mapa[seg]);
+    if(el){ el.style.display='block'; }
+    if(hint) hint.style.display='none';
+  } else {
+    if(hint) hint.style.display='inline';
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1462,11 +1952,45 @@ async function confirmarDelete(){
    HELPERS
 ───────────────────────────────────────────────────────────── */
 function limparForm(){
-  ['f-id','f-nome','f-empreendedor','f-municipio','f-contato','f-descricao','f-data-fundacao']
-    .forEach(id=>document.getElementById(id).value='');
+  // campos de texto simples
+  [
+    'f-id','f-nome','f-empreendedor','f-municipio','f-contato',
+    'f-data-fundacao',
+    // identificação e localização
+    'f-razao-social','f-nome-fantasia','f-cnpj','f-data-abertura',
+    'f-ie','f-im','f-telefone','f-email-nfe','f-responsavel',
+    'f-endereco','f-link-maps',
+    // fiscal
+    'f-cnae','f-faturamento','f-capital','f-prazo','f-banco',
+    'f-qsa','f-certidoes',
+    // setor — Tecnologia
+    'f-tec-lgpd','f-tec-stack',
+    // setor — Comércio
+    'f-com-st','f-com-log',
+    // setor — Indústria
+    'f-ind-lic','f-ind-cap',
+    // setor — Serviços
+    'f-serv-cons','f-serv-port',
+    // setor — Agronegócio
+    'f-agro-car','f-agro-mapa','f-agro-arm',
+    // documentação e descrição
+    'f-checklist','f-descricao',
+  ].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+
+  // selects
   document.getElementById('f-segmento-form').value='';
   document.getElementById('f-status-form').value='ativo';
+  document.getElementById('f-tipo-unidade').value='';
+  document.getElementById('f-regime').value='';
+  document.getElementById('f-pep').value='';
+
+  // char counter
   document.getElementById('char-count').textContent='0';
+
+  // ocultar todas as seções condicionais de setor
+  atualizarSecSetor('');
+
+  // remover marcações de inválido
   document.querySelectorAll('#form-emp .is-invalid').forEach(el=>el.classList.remove('is-invalid'));
 }
 function setLoading(on){
