@@ -9,7 +9,16 @@
 
 > **Assista à apresentação completa da solução:**
 >
+<<<<<<< HEAD
 > [![Watch the video](/home/enotari/Documents/sctec/sctecApp.png)](https://youtu.be/t0jomEHGy0E)
+=======
+> [![Watch the video](https://img.youtube.com/vi/T-D1KVIuvjA/maxresdefault.jpg)](https://youtu.be/t0jomEHGy0E)
+> 
+>[![Video Title](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=t0jomEHGy0E)
+
+
+
+>>>>>>> f1677fde7ca0939c4443f47c100dd6e7b5303037
 ---
 
 ## Descrição da Solução
