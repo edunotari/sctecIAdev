@@ -9,10 +9,7 @@
 
 > **Assista à apresentação completa da solução:**
 >
-> [![Assistir ao vídeo pitch](https://img.shields.io/badge/▶%20Vídeo%20Pitch-Assistir-ff006e?style=for-the-badge&logo=youtube)](URL_DO_VIDEO_AQUI)
->
-> *(O link será atualizado após a gravação e publicação do vídeo.)*
-
+> [![Watch the video](/home/enotari/Documents/sctec/sctecApp.png)](https://youtu.be/t0jomEHGy0E)
 ---
 
 ## Descrição da Solução
