@@ -14,7 +14,6 @@
 
 
 
->>>>>>> f1677fde7ca0939c4443f47c100dd6e7b5303037
 ---
 
 ## Descrição da Solução
