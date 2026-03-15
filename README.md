@@ -1,216 +1,277 @@
-# SCTEC — Empreendimentos SC
+# Empreendimentos SC — API REST
 
-> **Desafio Técnico · Trilha Dev IA · SCTEC 2025**
-> Aplicação CRUD para gerenciamento de empreendimentos em Santa Catarina.
-
----
-
-## Vídeo Pitch
-
-> **Assista à apresentação completa da solução:**
->
-> [![Assistir ao vídeo pitch](https://img.shields.io/badge/▶%20Vídeo%20Pitch-Assistir-ff006e?style=for-the-badge&logo=youtube)](URL_DO_VIDEO_AQUI)
->
-> *(O link será atualizado após a gravação e publicação do vídeo.)*
+API REST para gerenciamento de empreendimentos em Santa Catarina, desenvolvida como desafio técnico de back-end (CRUD).
 
 ---
 
-## Descrição da Solução
+## Descrição da solução
 
-A aplicação **SCTEC Empreendimentos SC** é um sistema CRUD completo para cadastro, listagem, edição e remoção de empreendimentos catarinenses, desenvolvida como resposta ao desafio técnico da **Trilha Dev IA do programa SCTEC**.
+A aplicação expõe uma API REST que permite cadastrar, listar, editar e remover registros de empreendimentos catarinenses. Os dados são persistidos em um banco SQLite local, sem necessidade de configuração de infraestrutura externa.
 
-### Abordagem adotada
+Um **dashboard web** interativo é servido na rota raiz (`/`), permitindo o uso completo do CRUD por interface gráfica sem necessidade de ferramentas externas como Postman ou curl.
 
-A solução combina as duas abordagens do desafio:
-
-- **Back-end (serviço):** API REST em Flask com persistência em SQLite, acessível via qualquer cliente HTTP (Postman, curl, integrações).
-- **Front-end (interface):** Dashboard web interativo servido pela própria aplicação, com tema visual **Cyberpunk 99** inspirado no programa SCTEC e na trilha de IA — incluindo logo SCTEC em circuito, mapa de Santa Catarina, matrix rain e efeitos neon animados.
-
-### Funcionalidades
-
-| Operação | Descrição |
-|---|---|
-| **Cadastrar** | Formulário completo com 6 seções, validação de campos obrigatórios e campos condicionais por segmento |
-| **Listar** | Tabela paginada com busca livre, filtros por segmento e status |
-| **Editar** | Pré-preenchimento de todos os campos do registro, atualização parcial suportada |
-| **Remover** | Confirmação antes da exclusão permanente |
-| **Detalhar** | Modal com todas as informações organizadas por seção, incluindo campos específicos do setor |
-
-### Campos gerenciados
-
-**Obrigatórios (desafio):** Nome do empreendimento · Empreendedor(a) responsável · Município de SC · Segmento · E-mail/contato · Status.
-
-**Adicionais — Identificação e Localização:** Razão Social · Nome Fantasia · CNPJ · Data de Abertura · IE · IM · Tipo de Unidade · Telefone · E-mail NFe · Responsável pelo Cadastro · Endereço Completo · Link Google Maps.
-
-**Adicionais — Dados Fiscais, Financeiros e Societários:** Regime Tributário · CNAE · Faturamento Médio · Capital Social · Prazo de Pagamento/Recebimento · Dados Bancários · QSA (Quadro de Sócios) · Verificação de PEP · Certidões Negativas.
-
-**Campos Específicos por Segmento (exibidos condicionalmente):**
-
-| Segmento | Campos exclusivos |
-|---|---|
-| Tecnologia | Segurança da Informação / LGPD · Stack Tecnológica e Licenças |
-| Comércio | Substituição Tributária (ST) · Logística |
-| Indústria | Licenças Ambientais / ISO · Capacidade de Produção e Matéria-prima |
-| Serviços | Registro em Conselhos de Classe · Portfólio e Seguro de RC |
-| Agronegócio | Número do CAR · Registro MAPA · Capacidade de Armazenagem |
-
-**Documentação de Apoio:** Checklist de documentos · Descrição livre.
+A abordagem principal é **desenvolvimento de serviço (back-end)** com API REST em Flask, complementada por um **front-end web** integrado com Bootstrap 5.
 
 ---
 
-## Tecnologias Utilizadas
+## Tecnologias utilizadas
 
 | Tecnologia | Versão mínima | Finalidade |
 |---|---|---|
 | Python | 3.10 | Linguagem principal |
-| Flask | 3.0 | Framework web e servidor de templates |
-| Flask-SQLAlchemy | 3.1 | ORM e gerenciamento do banco de dados |
-| SQLite | — | Banco de dados relacional local (arquivo `.db`) |
-| Bootstrap 5 | 5.3 (CDN) | Grid, modais e componentes do dashboard |
-| Bootstrap Icons | 1.11 (CDN) | Ícones da interface |
-| Google Fonts | — | Orbitron, Rajdhani, Share Tech Mono (tipografia cyberpunk) |
-| HTML5 Canvas | — | Matrix rain animado no fundo (vanilla JS) |
-
-> Nenhuma dependência de frontend além do que é carregado via CDN. Sem Node.js, sem build tools.
+| Flask | 3.0 | Framework web |
+| Flask-SQLAlchemy | 3.1 | ORM e persistência (SQLite) |
+| SQLite | — | Banco de dados (arquivo local) |
+| Bootstrap 5 | 5.3 (CDN) | Estilização do dashboard |
+| Bootstrap Icons | 1.11 (CDN) | Ícones do dashboard |
 
 ---
 
-## Estrutura Geral do Projeto
+## Estrutura do projeto
 
 ```
 sctecIAdev/
-│
-├── app.py            # Fábrica da aplicação Flask, rotas raiz, migration SQLite
-├── models.py         # Modelo ORM (Empreendimento) e listas de constantes
-├── routes.py         # Blueprint com todos os endpoints CRUD da API REST
-│
+├── app.py                    # Fábrica da aplicação Flask e ponto de entrada
+├── models.py                 # Modelo de dados (Empreendimento) e constantes de validação
+├── routes.py                 # Blueprint com todos os endpoints CRUD
+├── requirements.txt          # Dependências Python
+├── README.md                 # Esta documentação
 ├── templates/
-│   └── index.html    # Dashboard web (HTML + CSS cyberpunk + JS vanilla)
-│                     # — Matrix rain canvas
-│                     # — Logo SCTEC SVG circuit
-│                     # — Mapa SC SVG animado
-│                     # — 6 seções de formulário (campos condicionais por setor)
-│                     # — Modal de detalhes expandido
-│
-├── requirements.txt  # Dependências Python (Flask + Flask-SQLAlchemy)
-├── README.md         # Esta documentação
-│
+│   └── index.html            # Dashboard web (HTML + Bootstrap 5 + JS)
 └── instance/
-    └── empreendimentos.db   # Banco SQLite (criado automaticamente)
+    └── empreendimentos.db    # Banco SQLite (gerado automaticamente)
 ```
-
-### Responsabilidade de cada arquivo
-
-| Arquivo | O que faz |
-|---|---|
-| `app.py` | Cria o app Flask, registra o blueprint, serve o dashboard em `/`, executa `db.create_all()` e a migration automática de novas colunas para bancos existentes |
-| `models.py` | Define o modelo `Empreendimento` com todas as colunas e o `to_dict()` para serialização JSON |
-| `routes.py` | Implementa os 7 endpoints REST (`GET`, `POST`, `PUT`, `DELETE`, metadados) com validação, filtros e paginação |
-| `templates/index.html` | Interface completa: sidebar com logo SCTEC e mapa SC, topbar com efeito glitch, cards de estatísticas, filtros, tabela paginada, modal de formulário com campos condicionais por setor, modal de detalhes e toasts de feedback |
 
 ---
 
-## Instruções para Execução
+## Campos do empreendimento
 
-### Pré-requisitos
+| Campo | Tipo | Obrigatório | Descrição |
+|---|---|---|---|
+| `nome` | string | sim | Nome do empreendimento |
+| `empreendedor` | string | sim | Nome do(a) empreendedor(a) responsável |
+| `municipio` | string | sim | Município de Santa Catarina |
+| `segmento` | string | sim | `Tecnologia`, `Comércio`, `Indústria`, `Serviços` ou `Agronegócio` |
+| `contato` | string | sim | E-mail ou outro meio de contato |
+| `status` | string | não | `ativo` (padrão) ou `inativo` |
+| `descricao` | string | não | Descrição livre do empreendimento |
+| `data_fundacao` | string | não | Data de fundação no formato `YYYY-MM-DD` |
 
-- **Python 3.10+** instalado (`python --version` para verificar)
-- **pip** disponível
-- Conexão com a internet (apenas para carregar fontes e Bootstrap via CDN na primeira vez)
+---
 
-### Passo a passo
+## Instruções de execução
 
-**1. Acessar o diretório do projeto**
+### 1. Pré-requisitos
+
+- Python 3.10 ou superior instalado
+- `pip` disponível
+
+### 2. Clonar / acessar o projeto
 
 ```bash
 cd sctecIAdev
 ```
 
-**2. Criar e ativar o ambiente virtual**
+### 3. Criar e ativar ambiente virtual (recomendado)
 
 ```bash
+python -m venv .venv
 # Linux / macOS
-python -m venv .venv
 source .venv/bin/activate
-
-# Windows (PowerShell)
-python -m venv .venv
-.venv\Scripts\Activate.ps1
+# Windows
+.venv\Scripts\activate
 ```
 
-**3. Instalar as dependências**
+### 4. Instalar dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-**4. Iniciar a aplicação**
+### 5. Executar a aplicação
 
 ```bash
 python app.py
 ```
 
-O banco de dados `instance/empreendimentos.db` é criado automaticamente na primeira execução. Bancos existentes são migrados automaticamente com as novas colunas sem perda de dados.
+A API ficará disponível em `http://localhost:5000`.
 
-**5. Acessar o dashboard**
+**Acesse o dashboard pelo navegador em `http://localhost:5000`.**
 
-Abra o navegador e acesse:
+O banco de dados SQLite (`instance/empreendimentos.db`) é criado automaticamente na primeira execução.
+
+---
+
+## Endpoints da API
+
+### Dashboard (interface gráfica)
 
 ```
-http://localhost:5000
+GET /
+```
+
+Abre o painel de gerenciamento no navegador. Permite realizar todas as operações de CRUD sem uso de ferramentas externas.
+
+---
+
+### Informações da API
+
+```
+GET /api
+```
+
+Retorna metadados da API e lista de endpoints disponíveis.
+
+---
+
+### Listar empreendimentos
+
+```
+GET /api/empreendimentos
+```
+
+**Parâmetros de query (opcionais):**
+
+| Parâmetro | Descrição |
+|---|---|
+| `status` | Filtra por `ativo` ou `inativo` |
+| `segmento` | Filtra por segmento exato |
+| `municipio` | Busca parcial no município |
+| `q` | Busca livre em nome, empreendedor e município |
+| `page` | Número da página (padrão: 1) |
+| `per_page` | Registros por página (padrão: 20, máximo: 100) |
+
+**Exemplo:**
+```
+GET /api/empreendimentos?status=ativo&segmento=Tecnologia&page=1
+```
+
+**Resposta:**
+```json
+{
+  "total": 1,
+  "pagina": 1,
+  "por_pagina": 20,
+  "paginas": 1,
+  "dados": [...]
+}
 ```
 
 ---
 
-## Endpoints da API REST
+### Obter empreendimento por ID
 
-O dashboard web consome esta API, mas ela também pode ser usada diretamente:
+```
+GET /api/empreendimentos/<id>
+```
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `GET` | `/` | Dashboard web (interface gráfica) |
-| `GET` | `/api` | Metadados e lista de endpoints |
-| `GET` | `/api/empreendimentos` | Listar (filtros: `status`, `segmento`, `municipio`, `q`, `page`, `per_page`) |
-| `GET` | `/api/empreendimentos/<id>` | Obter registro por ID |
-| `POST` | `/api/empreendimentos` | Cadastrar novo empreendimento |
-| `PUT` | `/api/empreendimentos/<id>` | Atualizar parcialmente |
-| `DELETE` | `/api/empreendimentos/<id>` | Remover |
-| `GET` | `/api/empreendimentos/meta/segmentos` | Valores aceitos para segmento |
-| `GET` | `/api/empreendimentos/meta/status` | Valores aceitos para status |
+---
 
-### Exemplo rápido com curl
+### Cadastrar empreendimento
+
+```
+POST /api/empreendimentos
+Content-Type: application/json
+```
+
+**Corpo da requisição:**
+```json
+{
+  "nome": "TechFloripa Soluções",
+  "empreendedor": "Ana Paula Souza",
+  "municipio": "Florianópolis",
+  "segmento": "Tecnologia",
+  "contato": "contato@techfloripa.com.br",
+  "status": "ativo",
+  "descricao": "Startup de software para gestão agrícola.",
+  "data_fundacao": "2021-03-15"
+}
+```
+
+Retorna o registro criado com status HTTP **201**.
+
+---
+
+### Atualizar empreendimento
+
+```
+PUT /api/empreendimentos/<id>
+Content-Type: application/json
+```
+
+Todos os campos são opcionais. Apenas os campos enviados são atualizados.
+
+**Exemplo (desativar um empreendimento):**
+```json
+{
+  "status": "inativo"
+}
+```
+
+---
+
+### Remover empreendimento
+
+```
+DELETE /api/empreendimentos/<id>
+```
+
+**Resposta:**
+```json
+{
+  "mensagem": "Empreendimento 'TechFloripa Soluções' removido com sucesso."
+}
+```
+
+---
+
+### Metadados (valores aceitos)
+
+```
+GET /api/empreendimentos/meta/segmentos
+GET /api/empreendimentos/meta/status
+```
+
+---
+
+## Exemplos com curl
 
 ```bash
+# Listar todos
+curl http://localhost:5000/api/empreendimentos
+
 # Cadastrar
 curl -X POST http://localhost:5000/api/empreendimentos \
   -H "Content-Type: application/json" \
-  -d '{
-    "nome": "AgriSC Tecnologia",
-    "empreendedor": "Maria da Silva",
-    "municipio": "Chapecó",
-    "segmento": "Agronegócio",
-    "contato": "maria@agrisc.com.br",
-    "cnpj": "00.000.000/0001-00",
-    "regime_tributario": "Simples Nacional",
-    "agro_car": "SC-4204202-XXXX",
-    "status": "ativo"
-  }'
+  -d '{"nome":"Cachaça Vale do Peixe","empreendedor":"João da Silva","municipio":"Joaçaba","segmento":"Agronegócio","contato":"joao@valedopeixe.com.br"}'
 
-# Listar ativos do segmento Tecnologia
-curl "http://localhost:5000/api/empreendimentos?status=ativo&segmento=Tecnologia"
+# Atualizar
+curl -X PUT http://localhost:5000/api/empreendimentos/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status":"inativo"}'
+
+# Remover
+curl -X DELETE http://localhost:5000/api/empreendimentos/1
+
+# Filtrar por segmento e busca livre
+curl "http://localhost:5000/api/empreendimentos?segmento=Tecnologia&q=floripa"
 ```
 
 ---
 
-## Segmentos e Campos Condicionais
+## Tratamento de erros
 
-O formulário exibe automaticamente os campos específicos quando o segmento é selecionado. Os campos desaparecem ao trocar o segmento, evitando preenchimento de dados irrelevantes.
+Todas as respostas de erro seguem o padrão:
 
+```json
+{
+  "erro": "Descrição do erro."
+}
 ```
-Segmento selecionado → Seção 04 do formulário é revelada com os campos do setor
-Segmento alterado    → Seção anterior é ocultada, nova seção aparece com animação
-```
 
----
-
-*Desenvolvido para o desafio técnico do programa **SCTEC — Trilha Dev IA** · Santa Catarina · 2025*
+| Código HTTP | Situação |
+|---|---|
+| 400 | Dados inválidos ou campos obrigatórios ausentes |
+| 404 | Empreendimento não encontrado |
+| 405 | Método HTTP não permitido |
+| 500 | Erro interno no servidor |

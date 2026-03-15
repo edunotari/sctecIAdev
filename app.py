@@ -61,41 +61,8 @@ def create_app(config=None):
 
     with app.app_context():
         db.create_all()
-        _migrar_colunas(app)
 
     return app
-
-
-def _migrar_colunas(app):
-    """Adiciona colunas novas em bancos SQLite já existentes sem perder dados."""
-    from sqlalchemy import inspect, text
-
-    novas = {
-        "razao_social": "VARCHAR(200)", "nome_fantasia": "VARCHAR(200)",
-        "cnpj": "VARCHAR(20)", "data_abertura": "VARCHAR(10)",
-        "inscricao_estadual": "VARCHAR(50)", "inscricao_municipal": "VARCHAR(50)",
-        "endereco": "VARCHAR(500)", "link_maps": "VARCHAR(500)",
-        "tipo_unidade": "VARCHAR(20)", "email_nfe": "VARCHAR(200)",
-        "telefone": "VARCHAR(50)", "responsavel_cadastro": "VARCHAR(200)",
-        "regime_tributario": "VARCHAR(50)", "cnae": "VARCHAR(30)",
-        "dados_bancarios": "TEXT", "faturamento_medio": "VARCHAR(100)",
-        "prazo_pagamento": "VARCHAR(100)", "qsa": "TEXT",
-        "capital_social": "VARCHAR(100)", "verificacao_pep": "VARCHAR(10)",
-        "certidoes_negativas": "TEXT",
-        "tec_seguranca_lgpd": "TEXT", "tec_stack": "TEXT",
-        "com_subst_tributaria": "TEXT", "com_logistica": "TEXT",
-        "ind_licencas": "TEXT", "ind_capacidade": "TEXT",
-        "serv_conselhos": "TEXT", "serv_portfolio": "TEXT",
-        "agro_car": "VARCHAR(100)", "agro_armazenagem": "TEXT",
-        "checklist_docs": "TEXT",
-    }
-    engine = db.engine
-    existentes = {c["name"] for c in inspect(engine).get_columns("empreendimentos")}
-    with engine.connect() as conn:
-        for col, tipo in novas.items():
-            if col not in existentes:
-                conn.execute(text(f"ALTER TABLE empreendimentos ADD COLUMN {col} {tipo}"))
-        conn.commit()
 
 
 if __name__ == "__main__":
