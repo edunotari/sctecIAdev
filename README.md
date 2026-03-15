@@ -9,9 +9,9 @@
 
 > **Assista à apresentação completa da solução:**
 > 
->[![Video Title](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/t0jomEHGy0E)
->
-> [Assistir ao vídeo pitch](https://youtu.be/t0jomEHGy0E)
+>[![Video Title](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=t0jomEHGy0E)
+
+
 
 ---
 
