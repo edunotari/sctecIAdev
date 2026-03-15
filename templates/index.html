@@ -1,1013 +1,411 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>SCTEC — Empreendimentos SC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empreendimentos SC</title>
 
-  <!-- Fontes cyberpunk -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
-  <!-- Bootstrap 5 (modais / toast) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
 
   <style>
-  /* ═══════════════════════════════════════════════════════════
-     VARIÁVEIS & RESET
-  ═══════════════════════════════════════════════════════════ */
-  :root{
-    --bg:       #04060f;
-    --bg-s:     #080c1c;
-    --bg-card:  #0b1025;
-    --bg-inp:   #0d1230;
-    --cyan:     #00f0ff;
-    --magenta:  #ff006e;
-    --green:    #00ff9d;
-    --yellow:   #f5ff00;
-    --purple:   #b000ff;
-    --orange:   #ff6a00;
-    --red:      #ff1744;
-    --text:     #b8cce8;
-    --text-dim: #3a5070;
-    --side-w:   260px;
-    --gc: 0 0 8px #00f0ff88,0 0 22px #00f0ff44;
-    --gm: 0 0 8px #ff006e88,0 0 22px #ff006e44;
-    --gg: 0 0 8px #00ff9d88,0 0 22px #00ff9d44;
-    --gy: 0 0 8px #f5ff0088,0 0 22px #f5ff0044;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html,body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Rajdhani',sans-serif;
-    font-size:15px;
-    overflow-x:hidden;
-  }
-  h1,h2,h3,h4,h5,h6{font-family:'Orbitron',sans-serif;}
-  ::-webkit-scrollbar{width:6px;}
-  ::-webkit-scrollbar-track{background:var(--bg);}
-  ::-webkit-scrollbar-thumb{background:#00f0ff44;border-radius:3px;}
+    :root {
+      --sc-green: #009c3b;
+      --sc-red:   #d32f2f;
+      --sc-blue:  #1565c0;
+      --sidebar-w: 240px;
+    }
 
-  /* ═══════════════════════════════════════════════════════════
-     CANVAS / OVERLAY
-  ═══════════════════════════════════════════════════════════ */
-  #matrix-canvas{
-    position:fixed;inset:0;z-index:0;
-    opacity:.14;pointer-events:none;
-  }
-  .scanlines{
-    position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,.18) 2px,
-      rgba(0,0,0,.18) 4px
-    );
-  }
-  .vignette{
-    position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:radial-gradient(ellipse at center,
-      transparent 55%,rgba(4,6,15,.85) 100%);
-  }
+    body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
 
-  /* ═══════════════════════════════════════════════════════════
-     SIDEBAR
-  ═══════════════════════════════════════════════════════════ */
-  #sidebar{
-    position:fixed;top:0;left:0;
-    width:var(--side-w);height:100vh;
-    background:linear-gradient(180deg,#060918 0%,#04060f 100%);
-    border-right:1px solid rgba(0,240,255,.18);
-    display:flex;flex-direction:column;z-index:50;
-    padding-bottom:1rem;
-    overflow-y:auto;
-    transition:transform .3s;
-  }
-  #sidebar::before{
-    content:'';position:absolute;top:0;right:0;width:1px;height:100%;
-    background:linear-gradient(180deg,transparent,var(--cyan),transparent);
-    animation:side-glow 4s ease-in-out infinite;
-  }
-  @keyframes side-glow{
-    0%,100%{opacity:.2} 50%{opacity:.9}
-  }
+    /* ── Sidebar ── */
+    #sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0d3b1e 0%, #145a32 100%);
+      position: fixed;
+      top: 0; left: 0;
+      display: flex; flex-direction: column;
+      z-index: 100;
+      transition: transform .25s;
+    }
+    #sidebar .brand {
+      padding: 1.4rem 1.2rem 1rem;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+    }
+    #sidebar .brand h5 { margin: 0; font-weight: 700; font-size: 1rem; line-height: 1.3; }
+    #sidebar .brand small { color: rgba(255,255,255,.6); font-size: .75rem; }
+    #sidebar .nav-link {
+      color: rgba(255,255,255,.75);
+      padding: .65rem 1.2rem;
+      border-radius: 8px;
+      margin: .15rem .6rem;
+      font-size: .9rem;
+      display: flex; align-items: center; gap: .6rem;
+      transition: background .2s, color .2s;
+    }
+    #sidebar .nav-link:hover, #sidebar .nav-link.active {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+    }
+    #sidebar .seg-badge {
+      font-size: .7rem;
+      padding: .2rem .5rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      margin-left: auto;
+    }
 
-  /* BRAND */
-  .brand{
-    padding:1.4rem 1.2rem 1rem;
-    border-bottom:1px solid rgba(0,240,255,.1);
-    position:relative;
-  }
-  .brand-logo{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem;}
-  .logo-sc-wrap{flex-shrink:0;}
+    /* ── Main ── */
+    #main { margin-left: var(--sidebar-w); padding: 0; }
 
-  /* Logo SVG SCTEC — letras com traços de circuito */
-  .logo-sc{width:54px;height:54px;filter:drop-shadow(0 0 8px var(--cyan));}
+    /* ── Topbar ── */
+    #topbar {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: .75rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      position: sticky; top: 0; z-index: 99;
+    }
+    #topbar .title { font-weight: 700; font-size: 1.1rem; color: #1a1a1a; flex: 1; }
 
-  .brand-title{
-    font-family:'Orbitron',sans-serif;
-    font-size:.78rem;font-weight:900;letter-spacing:.14em;
-    color:var(--cyan);line-height:1.25;
-    text-shadow:var(--gc);
-  }
-  .brand-title span{
-    display:block;font-size:.58rem;
-    color:var(--magenta);letter-spacing:.12em;
-    text-shadow:var(--gm);
-  }
+    /* ── Cards de resumo ── */
+    .stat-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.1rem 1.3rem;
+      display: flex; align-items: center; gap: 1rem;
+      box-shadow: 0 1px 6px rgba(0,0,0,.06);
+    }
+    .stat-card .icon-wrap {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .stat-card .val { font-size: 1.7rem; font-weight: 700; line-height: 1; }
+    .stat-card .lbl { font-size: .78rem; color: #666; margin-top: .2rem; }
 
-  /* Badge trilha */
-  .trilha-badge{
-    display:inline-flex;align-items:center;gap:.4rem;
-    background:linear-gradient(90deg,rgba(176,0,255,.25),rgba(0,240,255,.15));
-    border:1px solid rgba(176,0,255,.5);
-    border-radius:4px;padding:.25rem .6rem;
-    font-family:'Share Tech Mono',monospace;font-size:.65rem;
-    color:var(--purple);letter-spacing:.08em;
-    box-shadow:0 0 10px rgba(176,0,255,.3);
-    margin-top:.4rem;
-    width:fit-content;
-  }
-  .trilha-badge i{color:var(--cyan);font-size:.7rem;}
+    /* ── Filtros ── */
+    #filter-bar { background: #fff; border-radius: 14px; padding: 1rem 1.2rem; box-shadow: 0 1px 6px rgba(0,0,0,.06); }
 
-  /* SC state mini map */
-  .sc-map{
-    width:60px;opacity:.5;
-    filter:drop-shadow(0 0 4px var(--cyan));
-    margin-top:.5rem;
-    animation:float 5s ease-in-out infinite;
-  }
+    /* ── Tabela ── */
+    #table-wrap { background: #fff; border-radius: 14px; box-shadow: 0 1px 6px rgba(0,0,0,.06); overflow: hidden; }
+    #table-wrap .table-header { padding: .9rem 1.2rem; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; }
+    #tbl thead th { background: #f8f9fa; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #555; border: none; }
+    #tbl tbody tr { vertical-align: middle; }
+    #tbl tbody td { border-color: #f5f5f5; font-size: .9rem; }
+    #tbl tbody tr:hover { background: #fafcff; }
 
-  /* Sidebar nav */
-  .side-section{padding:.5rem .8rem .2rem;font-size:.6rem;
-    letter-spacing:.14em;color:var(--text-dim);font-family:'Share Tech Mono',monospace;
-    text-transform:uppercase;margin-top:.8rem;}
+    /* Badges segmento */
+    .seg { border-radius: 20px; font-size: .72rem; font-weight: 600; padding: .25rem .65rem; }
+    .seg-Tecnologia  { background:#e3f2fd; color:#1565c0; }
+    .seg-Comércio    { background:#fff8e1; color:#e65100; }
+    .seg-Indústria   { background:#fce4ec; color:#c62828; }
+    .seg-Serviços    { background:#e8f5e9; color:#2e7d32; }
+    .seg-Agronegócio { background:#f3e5f5; color:#6a1b9a; }
 
-  .side-link{
-    display:flex;align-items:center;gap:.65rem;
-    padding:.55rem 1rem;margin:.1rem .5rem;
-    border-radius:6px;color:rgba(184,204,232,.65);
-    font-size:.9rem;font-weight:500;letter-spacing:.04em;
-    text-decoration:none;cursor:pointer;
-    border:1px solid transparent;
-    transition:all .2s;position:relative;overflow:hidden;
-  }
-  .side-link::before{
-    content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;
-    background:linear-gradient(90deg,transparent,rgba(0,240,255,.07),transparent);
-    transition:left .4s;
-  }
-  .side-link:hover::before,.side-link.active::before{left:100%;}
-  .side-link:hover,.side-link.active{
-    color:var(--cyan);border-color:rgba(0,240,255,.3);
-    background:rgba(0,240,255,.07);
-    box-shadow:inset 0 0 12px rgba(0,240,255,.08);
-    text-shadow:0 0 8px var(--cyan);
-  }
-  .side-link i{font-size:1rem;flex-shrink:0;}
-  .side-count{
-    margin-left:auto;background:rgba(0,240,255,.12);
-    border:1px solid rgba(0,240,255,.3);
-    border-radius:4px;padding:.1rem .4rem;
-    font-size:.65rem;font-family:'Share Tech Mono',monospace;
-    color:var(--cyan);min-width:24px;text-align:center;
-  }
+    .badge-ativo   { background:#e8f5e9; color:#2e7d32; border-radius:20px; font-size:.72rem; font-weight:600; padding:.25rem .65rem; }
+    .badge-inativo { background:#fce4ec; color:#c62828; border-radius:20px; font-size:.72rem; font-weight:600; padding:.25rem .65rem; }
 
-  /* Circuit decoration sidebar bottom */
-  .circuit-bottom{
-    margin-top:auto;padding:1rem 1.2rem .5rem;
-    opacity:.3;
-  }
-  .circuit-bottom svg{width:100%;}
+    /* Action buttons */
+    .btn-act { border: none; background: none; padding: .3rem .4rem; border-radius: 8px; cursor: pointer; transition: background .15s; }
+    .btn-act:hover { background: #f0f0f0; }
+    .btn-act.edit  { color: #1565c0; }
+    .btn-act.del   { color: #c62828; }
 
-  /* ═══════════════════════════════════════════════════════════
-     MAIN
-  ═══════════════════════════════════════════════════════════ */
-  #main{
-    margin-left:var(--side-w);
-    position:relative;z-index:10;
-    min-height:100vh;
-  }
+    /* ── Modal ── */
+    .modal-header { border-bottom: 1px solid #f0f0f0; }
+    .modal-footer { border-top: 1px solid #f0f0f0; }
+    .form-label { font-size: .85rem; font-weight: 600; color: #333; }
+    .form-control, .form-select { border-radius: 10px; font-size: .9rem; }
+    .form-control:focus, .form-select:focus { border-color: var(--sc-green); box-shadow: 0 0 0 3px rgba(0,156,59,.15); }
+    .required-star { color: #c62828; }
 
-  /* TOPBAR */
-  #topbar{
-    background:rgba(8,12,28,.92);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(0,240,255,.15);
-    padding:.7rem 1.4rem;
-    display:flex;align-items:center;gap:1rem;
-    position:sticky;top:0;z-index:40;
-  }
-  #topbar::after{
-    content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-    background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);
-    opacity:.6;
-  }
+    /* Pagination */
+    .page-link { border-radius: 8px !important; margin: 0 2px; border: none; color: #333; }
+    .page-link:hover { background: #e8f5e9; color: var(--sc-green); }
+    .page-item.active .page-link { background: var(--sc-green); border-color: var(--sc-green); }
 
-  .topbar-title{
-    font-family:'Orbitron',sans-serif;
-    font-size:.88rem;font-weight:700;letter-spacing:.1em;
-    color:var(--cyan);text-shadow:var(--gc);
-    flex:1;
-  }
-  .topbar-title .sub{
-    font-size:.62rem;color:var(--magenta);letter-spacing:.1em;
-    font-family:'Share Tech Mono',monospace;
-    text-shadow:var(--gm);
-  }
+    /* Toast */
+    .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999; }
 
-  /* GLITCH on topbar title */
-  .glitch{position:relative;}
-  .glitch::before,.glitch::after{
-    content:attr(data-text);
-    position:absolute;top:0;left:0;width:100%;
-    font-family:'Orbitron',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.1em;
-  }
-  .glitch::before{
-    color:var(--magenta);animation:glitch-1 4s infinite;
-    clip-path:polygon(0 15%,100% 15%,100% 35%,0 35%);
-  }
-  .glitch::after{
-    color:var(--cyan);animation:glitch-2 4s infinite;
-    clip-path:polygon(0 65%,100% 65%,100% 80%,0 80%);
-  }
-  @keyframes glitch-1{
-    0%,88%,100%{transform:none;opacity:0}
-    90%{transform:translateX(-4px);opacity:.8}
-    92%{transform:translateX(3px);opacity:.6}
-    94%{transform:none;opacity:0}
-  }
-  @keyframes glitch-2{
-    0%,88%,100%{transform:none;opacity:0}
-    91%{transform:translateX(4px);opacity:.8}
-    93%{transform:translateX(-3px);opacity:.6}
-    95%{transform:none;opacity:0}
-  }
+    /* Empty state */
+    .empty-state { padding: 3rem 1rem; text-align: center; color: #aaa; }
+    .empty-state i { font-size: 3rem; display: block; margin-bottom: .75rem; }
 
-  /* BTN NOVO */
-  .btn-cyber{
-    font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:700;
-    letter-spacing:.1em;text-transform:uppercase;border:none;
-    background:linear-gradient(90deg,var(--cyan),var(--purple));
-    color:#000;padding:.45rem 1.1rem;border-radius:4px;cursor:pointer;
-    box-shadow:0 0 14px rgba(0,240,255,.5);
-    transition:all .25s;position:relative;overflow:hidden;
-  }
-  .btn-cyber::before{
-    content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;
-    background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--purple));
-    z-index:-1;border-radius:5px;opacity:0;transition:opacity .25s;
-  }
-  .btn-cyber:hover{box-shadow:0 0 24px rgba(0,240,255,.8);transform:translateY(-1px);}
-  .btn-cyber:hover::before{opacity:1;}
-  .btn-cyber:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    /* Loading overlay */
+    #loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,.65);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9998; display: none;
+    }
 
-  /* ═══════════════════════════════════════════════════════════
-     CONTENT PAD
-  ═══════════════════════════════════════════════════════════ */
-  .content{padding:1.5rem 1.8rem;}
-
-  /* ═══════════════════════════════════════════════════════════
-     STAT CARDS
-  ═══════════════════════════════════════════════════════════ */
-  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
-  @media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
-  @media(max-width:550px){.stat-grid{grid-template-columns:1fr 1fr;}}
-
-  .stat-card{
-    background:var(--bg-card);
-    border-radius:8px;padding:1.1rem 1.2rem;
-    border:1px solid rgba(0,240,255,.15);
-    position:relative;overflow:hidden;
-    transition:all .3s;
-  }
-  .stat-card::before{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg,rgba(0,240,255,.04) 0%,transparent 60%);
-  }
-  .stat-card::after{
-    content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-    border-radius:0 0 8px 8px;
-  }
-  .stat-card.c-cyan::after {background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
-  .stat-card.c-magenta::after{background:linear-gradient(90deg,transparent,var(--magenta),transparent);}
-  .stat-card.c-green::after {background:linear-gradient(90deg,transparent,var(--green),transparent);}
-  .stat-card.c-yellow::after{background:linear-gradient(90deg,transparent,var(--yellow),transparent);}
-  .stat-card:hover{
-    border-color:rgba(0,240,255,.4);
-    transform:translateY(-2px);
-    box-shadow:0 4px 24px rgba(0,240,255,.12);
-  }
-
-  .stat-icon{
-    font-size:1.6rem;margin-bottom:.5rem;
-    animation:float 4s ease-in-out infinite;
-  }
-  .stat-card.c-cyan    .stat-icon{color:var(--cyan);   text-shadow:var(--gc);}
-  .stat-card.c-magenta .stat-icon{color:var(--magenta);text-shadow:var(--gm);}
-  .stat-card.c-green   .stat-icon{color:var(--green);  text-shadow:var(--gg);}
-  .stat-card.c-yellow  .stat-icon{color:var(--yellow); text-shadow:var(--gy);}
-
-  .stat-val{
-    font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;
-    line-height:1;color:#fff;
-    animation:count-glow .5s ease-out;
-  }
-  @keyframes count-glow{
-    0%{text-shadow:0 0 30px currentColor;}
-    100%{text-shadow:none;}
-  }
-  .stat-lbl{font-size:.72rem;color:var(--text-dim);letter-spacing:.06em;margin-top:.3rem;
-    font-family:'Share Tech Mono',monospace;}
-
-  /* corner decoration */
-  .corner{position:absolute;width:12px;height:12px;}
-  .corner-tl{top:6px;left:6px;border-top:2px solid;border-left:2px solid;}
-  .corner-br{bottom:6px;right:6px;border-bottom:2px solid;border-right:2px solid;}
-  .stat-card.c-cyan    .corner{border-color:var(--cyan);}
-  .stat-card.c-magenta .corner{border-color:var(--magenta);}
-  .stat-card.c-green   .corner{border-color:var(--green);}
-  .stat-card.c-yellow  .corner{border-color:var(--yellow);}
-
-  /* ═══════════════════════════════════════════════════════════
-     FILTER BAR
-  ═══════════════════════════════════════════════════════════ */
-  .filter-bar{
-    background:var(--bg-card);border-radius:8px;
-    border:1px solid rgba(0,240,255,.12);
-    padding:1rem 1.2rem;margin-bottom:1.2rem;
-    position:relative;
-  }
-  .filter-bar::before{
-    content:'// FILTROS';
-    position:absolute;top:-9px;left:1rem;
-    background:var(--bg-card);padding:0 .5rem;
-    font-family:'Share Tech Mono',monospace;font-size:.6rem;
-    color:var(--cyan);letter-spacing:.1em;
-  }
-  .filter-label{
-    font-family:'Share Tech Mono',monospace;font-size:.65rem;
-    color:var(--text-dim);letter-spacing:.08em;margin-bottom:.3rem;display:block;
-  }
-  .cyber-input,.cyber-select{
-    background:var(--bg-inp);border:1px solid rgba(0,240,255,.18);
-    border-radius:5px;color:var(--text);font-family:'Rajdhani',sans-serif;
-    font-size:.9rem;padding:.45rem .75rem;width:100%;
-    transition:all .25s;outline:none;
-    -webkit-appearance:none;
-  }
-  .cyber-input::placeholder{color:var(--text-dim);}
-  .cyber-input:focus,.cyber-select:focus{
-    border-color:var(--cyan);
-    box-shadow:0 0 0 3px rgba(0,240,255,.12),var(--gc);
-    color:#fff;
-  }
-  .cyber-select option{background:#0b1025;color:var(--text);}
-  .search-wrap{position:relative;}
-  .search-wrap i{
-    position:absolute;left:.65rem;top:50%;transform:translateY(-50%);
-    color:var(--text-dim);font-size:.9rem;pointer-events:none;
-  }
-  .search-wrap .cyber-input{padding-left:2rem;}
-
-  .btn-clear{
-    background:rgba(255,0,110,.1);border:1px solid rgba(255,0,110,.3);
-    color:var(--magenta);font-family:'Rajdhani',sans-serif;
-    font-size:.85rem;font-weight:600;padding:.45rem .9rem;
-    border-radius:5px;cursor:pointer;width:100%;
-    transition:all .2s;letter-spacing:.04em;
-  }
-  .btn-clear:hover{background:rgba(255,0,110,.2);box-shadow:var(--gm);}
-
-  /* ═══════════════════════════════════════════════════════════
-     TABLE PANEL
-  ═══════════════════════════════════════════════════════════ */
-  .table-panel{
-    background:var(--bg-card);border-radius:8px;
-    border:1px solid rgba(0,240,255,.12);
-    overflow:hidden;position:relative;
-  }
-  .table-panel::before{
-    content:'// REGISTROS';
-    position:absolute;top:-9px;left:1rem;z-index:2;
-    background:var(--bg-card);padding:0 .5rem;
-    font-family:'Share Tech Mono',monospace;font-size:.6rem;
-    color:var(--cyan);letter-spacing:.1em;
-  }
-  .table-hdr{
-    padding:.85rem 1.2rem;border-bottom:1px solid rgba(0,240,255,.1);
-    display:flex;align-items:center;gap:.75rem;
-  }
-  .table-hdr-title{
-    font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.1em;
-    color:var(--cyan);
-  }
-  #tbl-count{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--text-dim);}
-
-  /* Table override */
-  #tbl{width:100%;border-collapse:collapse;}
-  #tbl thead th{
-    background:rgba(0,240,255,.05);
-    font-family:'Share Tech Mono',monospace;font-size:.65rem;
-    color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;
-    padding:.7rem 1rem;border:none;
-    border-bottom:1px solid rgba(0,240,255,.15);
-    white-space:nowrap;
-  }
-  #tbl tbody tr{
-    border-bottom:1px solid rgba(0,240,255,.06);
-    transition:background .18s;
-    animation:row-in .35s ease-out both;
-  }
-  @keyframes row-in{
-    from{opacity:0;transform:translateX(-12px);}
-    to{opacity:1;transform:none;}
-  }
-  #tbl tbody tr:hover{background:rgba(0,240,255,.05);}
-  #tbl tbody td{
-    padding:.65rem 1rem;font-size:.9rem;
-    color:var(--text);border:none;vertical-align:middle;
-  }
-  .tbl-id{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--text-dim);}
-  .tbl-nome{font-weight:600;color:#e8f0ff;max-width:180px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .tbl-desc{font-size:.72rem;color:var(--text-dim);max-width:180px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .tbl-mun{font-size:.82rem;}
-  .tbl-mun i{color:var(--magenta);font-size:.7rem;}
-
-  /* Segment badges */
-  .seg{
-    display:inline-block;border-radius:4px;
-    font-family:'Share Tech Mono',monospace;font-size:.63rem;
-    font-weight:600;letter-spacing:.06em;padding:.2rem .55rem;
-    border:1px solid;white-space:nowrap;
-  }
-  .seg-Tecnologia {color:var(--cyan);   border-color:rgba(0,240,255,.4); background:rgba(0,240,255,.07);}
-  .seg-Comércio   {color:var(--magenta);border-color:rgba(255,0,110,.4); background:rgba(255,0,110,.07);}
-  .seg-Indústria  {color:var(--yellow); border-color:rgba(245,255,0,.4); background:rgba(245,255,0,.06);}
-  .seg-Serviços   {color:var(--green);  border-color:rgba(0,255,157,.4); background:rgba(0,255,157,.06);}
-  .seg-Agronegócio{color:var(--purple); border-color:rgba(176,0,255,.4); background:rgba(176,0,255,.07);}
-
-  .status-ativo  {color:var(--green); border-color:rgba(0,255,157,.4);background:rgba(0,255,157,.07);}
-  .status-inativo{color:var(--red);   border-color:rgba(255,23,68,.4); background:rgba(255,23,68,.07);}
-  .status-ativo,.status-inativo{
-    display:inline-block;border-radius:4px;border:1px solid;
-    font-family:'Share Tech Mono',monospace;font-size:.63rem;
-    letter-spacing:.06em;padding:.18rem .55rem;
-  }
-  /* pulse dot */
-  .status-ativo::before{
-    content:'● ';font-size:.45rem;vertical-align:middle;
-    animation:pulse-dot 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
-
-  /* Action buttons */
-  .btn-act{
-    background:none;border:1px solid transparent;
-    border-radius:5px;padding:.28rem .45rem;cursor:pointer;
-    font-size:.85rem;transition:all .18s;
-  }
-  .btn-act.view{color:var(--cyan);}
-  .btn-act.view:hover{border-color:rgba(0,240,255,.4);background:rgba(0,240,255,.08);box-shadow:var(--gc);}
-  .btn-act.edit{color:var(--yellow);}
-  .btn-act.edit:hover{border-color:rgba(245,255,0,.4);background:rgba(245,255,0,.07);}
-  .btn-act.del{color:var(--red);}
-  .btn-act.del:hover{border-color:rgba(255,23,68,.4);background:rgba(255,23,68,.08);}
-
-  /* Empty / loading */
-  .empty-state{
-    text-align:center;padding:3rem 1rem;
-    color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:.8rem;
-  }
-  .empty-state i{font-size:2.5rem;display:block;margin-bottom:.75rem;
-    color:rgba(0,240,255,.25);}
-
-  /* ═══════════════════════════════════════════════════════════
-     PAGINATION
-  ═══════════════════════════════════════════════════════════ */
-  .pag-bar{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:.7rem 1.2rem;border-top:1px solid rgba(0,240,255,.1);
-  }
-  .pag-info{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--text-dim);}
-  .pag-links{display:flex;gap:.3rem;list-style:none;padding:0;margin:0;}
-  .pag-links a,.pag-links span{
-    display:block;padding:.3rem .6rem;border-radius:4px;
-    font-family:'Share Tech Mono',monospace;font-size:.72rem;cursor:pointer;
-    border:1px solid rgba(0,240,255,.15);color:var(--text-dim);
-    transition:all .18s;text-decoration:none;
-  }
-  .pag-links a:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,240,255,.08);}
-  .pag-links .active a{border-color:var(--cyan);color:var(--cyan);background:rgba(0,240,255,.15);
-    box-shadow:var(--gc);}
-  .pag-links .disabled a,.pag-links .disabled span{opacity:.3;cursor:not-allowed;}
-
-  /* ═══════════════════════════════════════════════════════════
-     MODALS
-  ═══════════════════════════════════════════════════════════ */
-  .modal-content{
-    background:var(--bg-s);
-    border:1px solid rgba(0,240,255,.25);
-    border-radius:10px;
-    box-shadow:0 0 40px rgba(0,240,255,.12),0 0 80px rgba(176,0,255,.08);
-  }
-  .modal-header{
-    border-bottom:1px solid rgba(0,240,255,.12);
-    padding:1rem 1.4rem;
-  }
-  .modal-title{
-    font-family:'Orbitron',sans-serif;font-size:.85rem;
-    color:var(--cyan);letter-spacing:.08em;text-shadow:var(--gc);
-  }
-  .modal-title i{color:var(--magenta);}
-  .btn-close{filter:invert(1) sepia(1) saturate(5) hue-rotate(155deg);opacity:.5;}
-  .btn-close:hover{opacity:1;}
-  .modal-body{padding:1.4rem;}
-  .modal-footer{border-top:1px solid rgba(0,240,255,.1);padding:.9rem 1.4rem;background:rgba(0,240,255,.02);}
-
-  /* Form labels inside modals */
-  .form-label-cyber{
-    font-family:'Share Tech Mono',monospace;font-size:.67rem;
-    color:var(--cyan);letter-spacing:.08em;display:block;margin-bottom:.3rem;
-  }
-  .req{color:var(--magenta);}
-  .form-control.cyber,.form-select.cyber{
-    background:var(--bg-inp);border:1px solid rgba(0,240,255,.2);
-    border-radius:5px;color:var(--text);font-family:'Rajdhani',sans-serif;
-    font-size:.9rem;
-  }
-  .form-control.cyber::placeholder{color:var(--text-dim);}
-  .form-control.cyber:focus,.form-select.cyber:focus{
-    background:var(--bg-inp);color:#fff;
-    border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,240,255,.12);
-  }
-  .form-select.cyber option{background:#0b1025;}
-  .form-control.cyber.is-invalid,.form-select.cyber.is-invalid{
-    border-color:var(--red);box-shadow:0 0 0 3px rgba(255,23,68,.12);
-  }
-  .invalid-feedback{color:var(--red);font-size:.72rem;font-family:'Share Tech Mono',monospace;}
-  textarea.form-control.cyber{resize:vertical;min-height:80px;}
-
-  /* Section divider inside modal */
-  .modal-section{
-    font-family:'Share Tech Mono',monospace;font-size:.6rem;
-    color:var(--magenta);letter-spacing:.12em;
-    border-bottom:1px solid rgba(255,0,110,.2);
-    padding-bottom:.3rem;margin-bottom:.9rem;margin-top:.5rem;
-  }
-
-  /* Char counter */
-  .char-counter{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-dim);text-align:right;}
-
-  /* BTN actions in modals */
-  .btn-cyber-outline{
-    font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;
-    letter-spacing:.08em;text-transform:uppercase;
-    background:transparent;border:1px solid rgba(0,240,255,.3);
-    color:var(--cyan);padding:.43rem 1.1rem;border-radius:5px;cursor:pointer;
-    transition:all .2s;
-  }
-  .btn-cyber-outline:hover{background:rgba(0,240,255,.1);box-shadow:var(--gc);}
-
-  .btn-cyber-del{
-    font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;
-    letter-spacing:.08em;text-transform:uppercase;
-    background:linear-gradient(90deg,rgba(255,23,68,.8),rgba(176,0,255,.7));
-    border:none;color:#fff;padding:.43rem 1.1rem;border-radius:5px;cursor:pointer;
-    transition:all .2s;box-shadow:0 0 12px rgba(255,23,68,.4);
-  }
-  .btn-cyber-del:hover{box-shadow:0 0 24px rgba(255,23,68,.7);}
-
-  /* Detail modal body */
-  .detail-icon{
-    width:58px;height:58px;border-radius:8px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.7rem;flex-shrink:0;
-    border:1px solid rgba(0,240,255,.25);background:rgba(0,240,255,.07);
-  }
-  .detail-field small{
-    font-family:'Share Tech Mono',monospace;font-size:.62rem;
-    color:var(--text-dim);letter-spacing:.06em;
-    display:block;margin-bottom:.2rem;
-  }
-  .detail-field small i{color:var(--cyan);}
-  .detail-field div{font-size:.92rem;color:#e0eeff;}
-  .detail-desc{
-    background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);
-    border-radius:6px;padding:.8rem;margin-top:.5rem;
-    font-size:.88rem;color:var(--text);line-height:1.5;
-  }
-  .detail-meta{
-    font-family:'Share Tech Mono',monospace;font-size:.62rem;
-    color:var(--text-dim);border-top:1px solid rgba(0,240,255,.08);
-    padding-top:.75rem;margin-top:.75rem;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     LOADING OVERLAY
-  ═══════════════════════════════════════════════════════════ */
-  #loading-overlay{
-    position:fixed;inset:0;z-index:999;
-    background:rgba(4,6,15,.7);backdrop-filter:blur(4px);
-    display:none;align-items:center;justify-content:center;
-  }
-  .cyber-spinner{
-    width:48px;height:48px;
-    border:2px solid rgba(0,240,255,.2);
-    border-top-color:var(--cyan);border-right-color:var(--magenta);
-    border-radius:50%;animation:spin .8s linear infinite;
-    box-shadow:var(--gc);
-  }
-  @keyframes spin{to{transform:rotate(360deg);}}
-
-  /* ═══════════════════════════════════════════════════════════
-     TOAST
-  ═══════════════════════════════════════════════════════════ */
-  .toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;}
-  .toast{
-    background:var(--bg-s);
-    border-radius:8px;font-family:'Rajdhani',sans-serif;
-    font-size:.9rem;font-weight:500;letter-spacing:.03em;min-width:260px;
-  }
-  .toast.ok {border:1px solid rgba(0,255,157,.4);box-shadow:var(--gg);}
-  .toast.err{border:1px solid rgba(255,23,68,.4);box-shadow:0 0 14px rgba(255,23,68,.4);}
-  .toast.ok  .ti{color:var(--green);}
-  .toast.err .ti{color:var(--red);}
-
-  /* ═══════════════════════════════════════════════════════════
-     DELETE CONFIRM MODAL
-  ═══════════════════════════════════════════════════════════ */
-  .del-icon{font-size:3rem;color:var(--red);text-shadow:0 0 20px var(--red);
-    animation:float 2s ease-in-out infinite;}
-
-  /* ═══════════════════════════════════════════════════════════
-     MISC ANIMATIONS
-  ═══════════════════════════════════════════════════════════ */
-  @keyframes float{
-    0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}
-  }
-  @keyframes neon-pulse{
-    0%,100%{box-shadow:var(--gc);}
-    50%{box-shadow:0 0 20px var(--cyan),0 0 40px rgba(0,240,255,.4);}
-  }
-
-  /* MOBILE */
-  @media(max-width:768px){
-    #sidebar{transform:translateX(-100%);}
-    #sidebar.open{transform:none;}
-    #main{margin-left:0;}
-    .stat-grid{grid-template-columns:1fr 1fr;}
-    .content{padding:1rem;}
-  }
+    /* Mobile toggle */
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); }
+      #main { margin-left: 0; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ── Canvas Matrix Rain ── -->
-<canvas id="matrix-canvas"></canvas>
-<div class="scanlines"></div>
-<div class="vignette"></div>
-
-<!-- ═══════════════════════════════════════════════════
-     SIDEBAR
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ SIDEBAR ═══════════════════════════ -->
 <nav id="sidebar">
-
-  <!-- BRAND -->
   <div class="brand">
-    <div class="brand-logo">
-      <!-- Logo SCTEC SVG circuit -->
-      <div class="logo-sc-wrap">
-        <svg class="logo-sc" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Outer frame -->
-          <rect x="1" y="1" width="52" height="52" rx="8" stroke="#00f0ff" stroke-width="1.2" stroke-opacity=".4"/>
-          <!-- Circuit nodes -->
-          <circle cx="1" cy="1" r="2.5" fill="#00f0ff" opacity=".7"/>
-          <circle cx="53" cy="1" r="2.5" fill="#00f0ff" opacity=".7"/>
-          <circle cx="1" cy="53" r="2.5" fill="#00f0ff" opacity=".7"/>
-          <circle cx="53" cy="53" r="2.5" fill="#00f0ff" opacity=".7"/>
-          <!-- Letter S traces -->
-          <path d="M10 16 Q10 11 16 11 L22 11 Q28 11 28 17 Q28 22 22 23 L16 24 Q10 25 10 31 Q10 37 16 38 L22 38 Q28 38 28 33" stroke="#00f0ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-          <!-- Dot on S -->
-          <circle cx="10" cy="16" r="1.5" fill="#ff006e"/>
-          <circle cx="28" cy="33" r="1.5" fill="#ff006e"/>
-          <!-- Letter C -->
-          <path d="M44 16 Q44 11 38 11 L36 11 Q30 11 30 22 Q30 34 36 38 L38 38 Q44 38 44 33" stroke="#b000ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-          <!-- Dot on C -->
-          <circle cx="44" cy="16" r="1.5" fill="#00ff9d"/>
-          <circle cx="44" cy="33" r="1.5" fill="#00ff9d"/>
-          <!-- Circuit traces (decorative) -->
-          <line x1="1" y1="27" x2="9" y2="27" stroke="#00f0ff" stroke-width=".8" opacity=".4"/>
-          <line x1="45" y1="27" x2="53" y2="27" stroke="#b000ff" stroke-width=".8" opacity=".4"/>
-          <circle cx="7" cy="27" r="1.2" fill="#00f0ff" opacity=".5"/>
-          <circle cx="47" cy="27" r="1.2" fill="#b000ff" opacity=".5"/>
-          <!-- Bottom trace -->
-          <line x1="18" y1="53" x2="36" y2="53" stroke="#00f0ff" stroke-width=".8" opacity=".3"/>
-          <line x1="18" y1="1" x2="36" y2="1" stroke="#b000ff" stroke-width=".8" opacity=".3"/>
-        </svg>
-      </div>
-      <div>
-        <div class="brand-title">
-          SCTEC
-          <span>EMPREENDIMENTOS SC</span>
-        </div>
-      </div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <i class="bi bi-building-fill fs-4" style="color:#4caf50;"></i>
+      <h5>Empreendimentos<br>Santa Catarina</h5>
     </div>
-
-    <div class="trilha-badge">
-      <i class="bi bi-cpu-fill"></i> TRILHA DEV IA
-    </div>
-
-    <!-- SC State mini outline -->
-    <svg class="sc-map" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <title>Santa Catarina</title>
-      <!-- Simplified SC outline -->
-      <path d="M 8 15 L 15 10 L 30 8 L 50 6 L 70 5 L 88 7 L 100 12 L 108 18 L 112 25 L 110 35 L 105 45 L 95 55 L 82 63 L 70 68 L 55 72 L 40 70 L 25 65 L 14 56 L 7 45 L 4 35 L 5 24 Z"
-        fill="rgba(0,240,255,0.08)" stroke="#00f0ff" stroke-width="1.2"/>
-      <!-- State capital dot (Florianópolis ~eastern center) -->
-      <circle cx="90" cy="40" r="3" fill="#ff006e" opacity=".9"/>
-      <circle cx="90" cy="40" r="6" fill="none" stroke="#ff006e" stroke-width="1" opacity=".5"/>
-      <!-- Decoration lines inside -->
-      <line x1="30" y1="35" x2="85" y2="35" stroke="#00f0ff" stroke-width=".5" opacity=".3" stroke-dasharray="4 4"/>
-    </svg>
+    <small>Painel de Gestão</small>
   </div>
 
-  <!-- MENU -->
-  <p class="side-section">// menu</p>
-  <a class="side-link active" onclick="return false" href="#">
-    <i class="bi bi-grid-fill"></i> Dashboard
-  </a>
-  <a class="side-link" onclick="abrirModalCriar();return false;" href="#">
-    <i class="bi bi-plus-circle"></i> Novo Registro
-  </a>
+  <div class="mt-2">
+    <p class="px-3 mb-1" style="font-size:.7rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;">Menu</p>
+    <a class="nav-link active" href="#" onclick="return false">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a class="nav-link" href="#" onclick="abrirModalCriar(); return false;">
+      <i class="bi bi-plus-circle-fill"></i> Novo Empreendimento
+    </a>
+  </div>
 
-  <!-- FILTROS SEGMENTO -->
-  <p class="side-section">// segmentos</p>
-  <a class="side-link" onclick="filtrarSegmento('Tecnologia');return false;" href="#">
-    <i class="bi bi-cpu-fill" style="color:var(--cyan);"></i> Tecnologia
-    <span class="side-count" id="sb-Tecnologia">0</span>
-  </a>
-  <a class="side-link" onclick="filtrarSegmento('Comércio');return false;" href="#">
-    <i class="bi bi-shop-window" style="color:var(--magenta);"></i> Comércio
-    <span class="side-count" id="sb-Comércio">0</span>
-  </a>
-  <a class="side-link" onclick="filtrarSegmento('Indústria');return false;" href="#">
-    <i class="bi bi-gear-wide-connected" style="color:var(--yellow);"></i> Indústria
-    <span class="side-count" id="sb-Indústria">0</span>
-  </a>
-  <a class="side-link" onclick="filtrarSegmento('Serviços');return false;" href="#">
-    <i class="bi bi-briefcase-fill" style="color:var(--green);"></i> Serviços
-    <span class="side-count" id="sb-Serviços">0</span>
-  </a>
-  <a class="side-link" onclick="filtrarSegmento('Agronegócio');return false;" href="#">
-    <i class="bi bi-tree-fill" style="color:var(--purple);"></i> Agronegócio
-    <span class="side-count" id="sb-Agronegócio">0</span>
-  </a>
-
-  <!-- Circuit decoration bottom -->
-  <div class="circuit-bottom">
-    <svg viewBox="0 0 200 50" fill="none">
-      <line x1="0" y1="10" x2="60" y2="10" stroke="#00f0ff" stroke-width=".8"/>
-      <circle cx="60" cy="10" r="3" fill="none" stroke="#00f0ff" stroke-width=".8"/>
-      <line x1="63" y1="10" x2="80" y2="10" stroke="#00f0ff" stroke-width=".8"/>
-      <line x1="80" y1="10" x2="80" y2="35" stroke="#00f0ff" stroke-width=".8"/>
-      <line x1="80" y1="35" x2="140" y2="35" stroke="#00f0ff" stroke-width=".8"/>
-      <circle cx="140" cy="35" r="3" fill="none" stroke="#b000ff" stroke-width=".8"/>
-      <line x1="143" y1="35" x2="200" y2="35" stroke="#b000ff" stroke-width=".8"/>
-      <line x1="100" y1="10" x2="100" y2="0" stroke="#ff006e" stroke-width=".8"/>
-      <circle cx="100" cy="0" r="2" fill="#ff006e" opacity=".6"/>
-      <text x="4" y="24" font-family="Share Tech Mono,monospace" font-size="7" fill="#00f0ff" opacity=".5">SC // 2025</text>
-    </svg>
+  <div class="mt-3">
+    <p class="px-3 mb-1" style="font-size:.7rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;">Segmentos</p>
+    <a class="nav-link" href="#" onclick="filtrarSegmento('Tecnologia'); return false;">
+      <i class="bi bi-cpu-fill"></i> Tecnologia
+      <span class="seg-badge" id="sb-Tecnologia">0</span>
+    </a>
+    <a class="nav-link" href="#" onclick="filtrarSegmento('Comércio'); return false;">
+      <i class="bi bi-shop-window-fill"></i> Comércio
+      <span class="seg-badge" id="sb-Comércio">0</span>
+    </a>
+    <a class="nav-link" href="#" onclick="filtrarSegmento('Indústria'); return false;">
+      <i class="bi bi-gear-wide-connected"></i> Indústria
+      <span class="seg-badge" id="sb-Indústria">0</span>
+    </a>
+    <a class="nav-link" href="#" onclick="filtrarSegmento('Serviços'); return false;">
+      <i class="bi bi-briefcase-fill"></i> Serviços
+      <span class="seg-badge" id="sb-Serviços">0</span>
+    </a>
+    <a class="nav-link" href="#" onclick="filtrarSegmento('Agronegócio'); return false;">
+      <i class="bi bi-tree-fill"></i> Agronegócio
+      <span class="seg-badge" id="sb-Agronegócio">0</span>
+    </a>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════
-     MAIN
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ MAIN ═══════════════════════════ -->
 <div id="main">
 
-  <!-- TOPBAR -->
+  <!-- Topbar -->
   <div id="topbar">
-    <button class="btn-cyber d-md-none me-1" style="padding:.4rem .7rem;font-size:.7rem;"
-            onclick="document.getElementById('sidebar').classList.toggle('open')">
-      <i class="bi bi-list"></i>
+    <button class="btn btn-sm d-md-none me-1" onclick="document.getElementById('sidebar').classList.toggle('open')">
+      <i class="bi bi-list fs-5"></i>
     </button>
-
-    <div class="topbar-title">
-      <div class="glitch" data-text="GESTÃO DE EMPREENDIMENTOS">GESTÃO DE EMPREENDIMENTOS</div>
-      <div class="sub">SANTA CATARINA &nbsp;/&nbsp; SCTEC &nbsp;/&nbsp; TRILHA DEV IA</div>
-    </div>
-
-    <!-- Neural net decoration (inline SVG, topbar) -->
-    <svg width="60" height="36" viewBox="0 0 60 36" fill="none" class="d-none d-lg-block me-2">
-      <circle cx="6" cy="6" r="3" fill="#00f0ff" opacity=".7"/>
-      <circle cx="6" cy="18" r="3" fill="#00f0ff" opacity=".7"/>
-      <circle cx="6" cy="30" r="3" fill="#00f0ff" opacity=".7"/>
-      <circle cx="30" cy="12" r="3" fill="#b000ff" opacity=".7"/>
-      <circle cx="30" cy="24" r="3" fill="#b000ff" opacity=".7"/>
-      <circle cx="54" cy="18" r="3" fill="#ff006e" opacity=".7"/>
-      <line x1="9" y1="6"  x2="27" y2="12" stroke="#00f0ff" stroke-width=".8" opacity=".4"/>
-      <line x1="9" y1="6"  x2="27" y2="24" stroke="#00f0ff" stroke-width=".8" opacity=".2"/>
-      <line x1="9" y1="18" x2="27" y2="12" stroke="#00f0ff" stroke-width=".8" opacity=".3"/>
-      <line x1="9" y1="18" x2="27" y2="24" stroke="#00f0ff" stroke-width=".8" opacity=".4"/>
-      <line x1="9" y1="30" x2="27" y2="12" stroke="#00f0ff" stroke-width=".8" opacity=".2"/>
-      <line x1="9" y1="30" x2="27" y2="24" stroke="#00f0ff" stroke-width=".8" opacity=".3"/>
-      <line x1="33" y1="12" x2="51" y2="18" stroke="#b000ff" stroke-width=".8" opacity=".5"/>
-      <line x1="33" y1="24" x2="51" y2="18" stroke="#b000ff" stroke-width=".8" opacity=".5"/>
-    </svg>
-
-    <button class="btn-cyber" onclick="abrirModalCriar()">
-      <i class="bi bi-plus-lg me-1"></i>NOVO
+    <span class="title"><i class="bi bi-building me-2" style="color:var(--sc-green);"></i>Gestão de Empreendimentos — SC</span>
+    <button class="btn btn-success btn-sm rounded-pill px-3" onclick="abrirModalCriar()">
+      <i class="bi bi-plus-lg me-1"></i>Novo
     </button>
   </div>
 
-  <!-- CONTENT -->
-  <div class="content">
+  <!-- Content -->
+  <div class="p-3 p-md-4">
 
-    <!-- STAT CARDS -->
-    <div class="stat-grid">
-      <div class="stat-card c-cyan">
-        <div class="corner corner-tl"></div>
-        <div class="corner corner-br"></div>
-        <div class="stat-icon"><i class="bi bi-building-fill"></i></div>
-        <div class="stat-val" id="stat-total">—</div>
-        <div class="stat-lbl">TOTAL DE REGISTROS</div>
+    <!-- ── Cards de resumo ── -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="icon-wrap" style="background:#e8f5e9;">
+            <i class="bi bi-building-fill" style="color:#2e7d32;"></i>
+          </div>
+          <div>
+            <div class="val" id="stat-total">—</div>
+            <div class="lbl">Total de registros</div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card c-green">
-        <div class="corner corner-tl"></div>
-        <div class="corner corner-br"></div>
-        <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
-        <div class="stat-val" id="stat-ativos">—</div>
-        <div class="stat-lbl">ATIVOS</div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="icon-wrap" style="background:#e3f2fd;">
+            <i class="bi bi-check-circle-fill" style="color:#1565c0;"></i>
+          </div>
+          <div>
+            <div class="val" id="stat-ativos">—</div>
+            <div class="lbl">Empreendimentos ativos</div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card c-magenta">
-        <div class="corner corner-tl"></div>
-        <div class="corner corner-br"></div>
-        <div class="stat-icon"><i class="bi bi-x-circle-fill"></i></div>
-        <div class="stat-val" id="stat-inativos">—</div>
-        <div class="stat-lbl">INATIVOS</div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="icon-wrap" style="background:#fce4ec;">
+            <i class="bi bi-x-circle-fill" style="color:#c62828;"></i>
+          </div>
+          <div>
+            <div class="val" id="stat-inativos">—</div>
+            <div class="lbl">Empreendimentos inativos</div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card c-yellow">
-        <div class="corner corner-tl"></div>
-        <div class="corner corner-br"></div>
-        <div class="stat-icon"><i class="bi bi-pie-chart-fill"></i></div>
-        <div class="stat-val" id="stat-segmentos">—</div>
-        <div class="stat-lbl">SEGMENTOS ATIVOS</div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="icon-wrap" style="background:#f3e5f5;">
+            <i class="bi bi-pie-chart-fill" style="color:#6a1b9a;"></i>
+          </div>
+          <div>
+            <div class="val" id="stat-segmentos">—</div>
+            <div class="lbl">Segmentos representados</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- FILTER BAR -->
-    <div class="filter-bar mb-4">
+    <!-- ── Filtros ── -->
+    <div id="filter-bar" class="mb-3">
       <div class="row g-2 align-items-end">
         <div class="col-12 col-md-4">
-          <span class="filter-label">&#47;&#47; BUSCA LIVRE</span>
-          <div class="search-wrap">
-            <i class="bi bi-search"></i>
-            <input id="f-q" class="cyber-input" type="text"
-                   placeholder="nome, empreendedor, município…" oninput="agendarBusca()"/>
+          <label class="form-label mb-1">Busca livre</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input id="f-q" type="text" class="form-control border-start-0 ps-1" placeholder="Nome, empreendedor, município…" oninput="agendarBusca()" />
           </div>
         </div>
         <div class="col-6 col-md-2">
-          <span class="filter-label">&#47;&#47; SEGMENTO</span>
-          <select id="f-segmento" class="cyber-select" onchange="buscar()">
+          <label class="form-label mb-1">Segmento</label>
+          <select id="f-segmento" class="form-select" onchange="buscar()">
             <option value="">Todos</option>
-            <option>Tecnologia</option><option>Comércio</option>
-            <option>Indústria</option><option>Serviços</option><option>Agronegócio</option>
+            <option>Tecnologia</option>
+            <option>Comércio</option>
+            <option>Indústria</option>
+            <option>Serviços</option>
+            <option>Agronegócio</option>
           </select>
         </div>
         <div class="col-6 col-md-2">
-          <span class="filter-label">&#47;&#47; STATUS</span>
-          <select id="f-status" class="cyber-select" onchange="buscar()">
+          <label class="form-label mb-1">Status</label>
+          <select id="f-status" class="form-select" onchange="buscar()">
             <option value="">Todos</option>
             <option value="ativo">Ativo</option>
             <option value="inativo">Inativo</option>
           </select>
         </div>
-        <div class="col-4 col-md-2">
-          <span class="filter-label">&#47;&#47; POR PÁG.</span>
-          <select id="f-per-page" class="cyber-select" onchange="buscar()">
+        <div class="col-6 col-md-2">
+          <label class="form-label mb-1">Por página</label>
+          <select id="f-per-page" class="form-select" onchange="buscar()">
             <option value="10">10</option>
             <option value="20" selected>20</option>
             <option value="50">50</option>
           </select>
         </div>
-        <div class="col-8 col-md-2">
-          <button class="btn-clear" onclick="limparFiltros()">
-            <i class="bi bi-x-lg me-1"></i>LIMPAR
+        <div class="col-6 col-md-2 d-flex gap-2">
+          <button class="btn btn-outline-secondary w-100" onclick="limparFiltros()">
+            <i class="bi bi-x-lg me-1"></i>Limpar
           </button>
         </div>
       </div>
     </div>
 
-    <!-- TABLE -->
-    <div class="table-panel">
-      <div class="table-hdr">
-        <i class="bi bi-table" style="color:var(--cyan);"></i>
-        <span class="table-hdr-title">EMPREENDIMENTOS</span>
-        <span id="tbl-count"></span>
+    <!-- ── Tabela ── -->
+    <div id="table-wrap">
+      <div class="table-header">
+        <span class="fw-600" style="font-size:.9rem;font-weight:600;color:#333;">
+          <i class="bi bi-table me-2" style="color:var(--sc-green);"></i>Registros
+        </span>
+        <span id="tbl-count" class="ms-2 text-muted" style="font-size:.82rem;"></span>
       </div>
-      <div style="overflow-x:auto;">
-        <table id="tbl">
+      <div class="table-responsive">
+        <table id="tbl" class="table mb-0">
           <thead>
             <tr>
-              <th>#ID</th>
-              <th>EMPREENDIMENTO</th>
-              <th>EMPREENDEDOR(A)</th>
-              <th>MUNICÍPIO</th>
-              <th>SEGMENTO</th>
-              <th>CONTATO</th>
-              <th>FUNDAÇÃO</th>
-              <th>STATUS</th>
+              <th>#</th>
+              <th>Empreendimento</th>
+              <th>Empreendedor(a)</th>
+              <th>Município</th>
+              <th>Segmento</th>
+              <th>Contato</th>
+              <th>Fundação</th>
+              <th>Status</th>
               <th></th>
             </tr>
           </thead>
           <tbody id="tbl-body">
-            <tr><td colspan="9" class="empty-state">
-              <i class="bi bi-hourglass-split"></i>// CARREGANDO DADOS…
-            </td></tr>
+            <tr><td colspan="9" class="empty-state"><i class="bi bi-hourglass-split"></i>Carregando…</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="pag-bar" id="pag-bar" style="display:none;">
-        <span class="pag-info" id="pag-info"></span>
-        <ul class="pag-links" id="pag-links"></ul>
+      <!-- Paginação -->
+      <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top" id="pagination-bar">
+        <small class="text-muted" id="pagination-info"></small>
+        <ul class="pagination pagination-sm mb-0" id="pagination-links"></ul>
       </div>
     </div>
 
   </div><!-- /content -->
 </div><!-- /main -->
 
-<!-- ═══════════════════════════════════════════════════
-     LOADING OVERLAY
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ LOADING OVERLAY ═══════════════════════════ -->
 <div id="loading-overlay">
-  <div class="cyber-spinner"></div>
+  <div class="spinner-border text-success" style="width:2.5rem;height:2.5rem;"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     MODAL — FORMULÁRIO CRUD
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ MODAL FORM ═══════════════════════════ -->
 <div class="modal fade" id="modalEmp" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <i class="bi bi-terminal-fill me-2"></i>
-          <span id="modal-title-text">NOVO EMPREENDIMENTO</span>
+    <div class="modal-content border-0 shadow">
+
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-bold" id="modal-title">
+          <i class="bi bi-building-fill me-2" style="color:var(--sc-green);"></i>
+          <span id="modal-title-text">Novo Empreendimento</span>
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
-        <form id="form-emp" novalidate>
-          <input type="hidden" id="f-id"/>
 
-          <!-- Bloco 1: Identificação -->
-          <div class="modal-section">&#47;&#47; 01 IDENTIFICAÇÃO</div>
+      <div class="modal-body p-4">
+        <form id="form-emp" novalidate>
+          <input type="hidden" id="f-id" />
+
+          <!-- Linha 1 -->
           <div class="row g-3 mb-3">
             <div class="col-12 col-md-7">
-              <label class="form-label-cyber">NOME DO EMPREENDIMENTO <span class="req">*</span></label>
-              <input id="f-nome" type="text" class="form-control cyber" maxlength="200"
-                     placeholder="Ex.: TechFloripa Soluções Ltda." required/>
+              <label class="form-label">Nome do empreendimento <span class="required-star">*</span></label>
+              <input id="f-nome" type="text" class="form-control" placeholder="Ex.: TechFloripa Soluções" maxlength="200" required />
               <div class="invalid-feedback">Campo obrigatório.</div>
             </div>
             <div class="col-12 col-md-5">
-              <label class="form-label-cyber">STATUS <span class="req">*</span></label>
-              <select id="f-status-form" class="form-select cyber">
-                <option value="ativo">● Ativo</option>
-                <option value="inativo">○ Inativo</option>
+              <label class="form-label">Status <span class="required-star">*</span></label>
+              <select id="f-status-form" class="form-select">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
               </select>
             </div>
           </div>
 
-          <!-- Bloco 2: Responsável -->
-          <div class="modal-section">&#47;&#47; 02 RESPONSÁVEL &amp; CONTATO</div>
+          <!-- Linha 2 -->
           <div class="row g-3 mb-3">
             <div class="col-12 col-md-6">
-              <label class="form-label-cyber">NOME DO(A) EMPREENDEDOR(A) <span class="req">*</span></label>
-              <input id="f-empreendedor" type="text" class="form-control cyber" maxlength="200"
-                     placeholder="Ex.: Ana Paula Souza" required/>
+              <label class="form-label">Nome do(a) empreendedor(a) responsável <span class="required-star">*</span></label>
+              <input id="f-empreendedor" type="text" class="form-control" placeholder="Ex.: Ana Paula Souza" maxlength="200" required />
               <div class="invalid-feedback">Campo obrigatório.</div>
             </div>
             <div class="col-12 col-md-6">
-              <label class="form-label-cyber">E-MAIL OU MEIO DE CONTATO <span class="req">*</span></label>
-              <input id="f-contato" type="text" class="form-control cyber" maxlength="200"
-                     placeholder="Ex.: ana@empresa.sc.br" required/>
+              <label class="form-label">E-mail ou meio de contato <span class="required-star">*</span></label>
+              <input id="f-contato" type="text" class="form-control" placeholder="Ex.: contato@empresa.sc.br" maxlength="200" required />
               <div class="invalid-feedback">Campo obrigatório.</div>
             </div>
           </div>
 
-          <!-- Bloco 3: Localização / Segmento -->
-          <div class="modal-section">&#47;&#47; 03 LOCALIZAÇÃO &amp; SEGMENTO</div>
+          <!-- Linha 3 -->
           <div class="row g-3 mb-3">
             <div class="col-12 col-md-5">
-              <label class="form-label-cyber">MUNICÍPIO — SANTA CATARINA <span class="req">*</span></label>
-              <input id="f-municipio" type="text" class="form-control cyber"
-                     list="lista-municipios" maxlength="100"
-                     placeholder="Ex.: Florianópolis" required/>
+              <label class="form-label">Município de Santa Catarina <span class="required-star">*</span></label>
+              <input id="f-municipio" type="text" class="form-control" list="lista-municipios" placeholder="Ex.: Florianópolis" maxlength="100" required />
               <datalist id="lista-municipios">
                 <option>Florianópolis</option><option>Joinville</option><option>Blumenau</option>
                 <option>São José</option><option>Chapecó</option><option>Criciúma</option>
@@ -1015,16 +413,16 @@
                 <option>Palhoça</option><option>Balneário Camboriú</option><option>Brusque</option>
                 <option>Tubarão</option><option>São Bento do Sul</option><option>Caçador</option>
                 <option>Concórdia</option><option>Navegantes</option><option>Araranguá</option>
-                <option>Joaçaba</option><option>Videira</option><option>Rio do Sul</option>
-                <option>Mafra</option><option>Tijucas</option><option>Içara</option>
-                <option>Canoinhas</option><option>São Francisco do Sul</option>
+                <option>Joaçaba</option><option>Videira</option><option>Camboriú</option>
+                <option>Mafra</option><option>Tijucas</option><option>Rio do Sul</option>
+                <option>Içara</option><option>Canoinhas</option><option>São Francisco do Sul</option>
               </datalist>
               <div class="invalid-feedback">Campo obrigatório.</div>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label-cyber">SEGMENTO DE ATUAÇÃO <span class="req">*</span></label>
-              <select id="f-segmento-form" class="form-select cyber" required>
-                <option value="" disabled selected>// selecione…</option>
+              <label class="form-label">Segmento de atuação <span class="required-star">*</span></label>
+              <select id="f-segmento-form" class="form-select" required>
+                <option value="" disabled selected>Selecione…</option>
                 <option>Tecnologia</option>
                 <option>Comércio</option>
                 <option>Indústria</option>
@@ -1034,74 +432,72 @@
               <div class="invalid-feedback">Selecione um segmento.</div>
             </div>
             <div class="col-12 col-md-3">
-              <label class="form-label-cyber">DATA DE FUNDAÇÃO</label>
-              <input id="f-data-fundacao" type="date" class="form-control cyber"/>
+              <label class="form-label">Data de fundação</label>
+              <input id="f-data-fundacao" type="date" class="form-control" />
             </div>
           </div>
 
-          <!-- Bloco 4: Descrição -->
-          <div class="modal-section">&#47;&#47; 04 DESCRIÇÃO</div>
+          <!-- Linha 4 -->
           <div class="mb-1">
-            <textarea id="f-descricao" class="form-control cyber" rows="3" maxlength="1000"
-              placeholder="Descreva o empreendimento: produtos, diferenciais, missão…"></textarea>
-            <div class="char-counter mt-1"><span id="char-count">0</span>/1000</div>
+            <label class="form-label">Descrição</label>
+            <textarea id="f-descricao" class="form-control" rows="3" maxlength="1000"
+              placeholder="Descreva brevemente o empreendimento, produtos, serviços ou diferenciais…"></textarea>
+            <div class="text-end mt-1">
+              <small class="text-muted"><span id="char-count">0</span>/1000</small>
+            </div>
           </div>
 
         </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cyber-outline" data-bs-dismiss="modal">
-          <i class="bi bi-x-lg me-1"></i>CANCELAR
+      </div><!-- /modal-body -->
+
+      <div class="modal-footer bg-light">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i>Cancelar
         </button>
-        <button class="btn-cyber" id="btn-salvar" onclick="salvar()">
-          <i class="bi bi-check-lg me-1"></i>SALVAR
+        <button class="btn btn-success px-4" id="btn-salvar" onclick="salvar()">
+          <i class="bi bi-check-lg me-1"></i>Salvar
         </button>
       </div>
+
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     MODAL — DETALHE
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ MODAL DETALHE ═══════════════════════════ -->
 <div class="modal fade" id="modalDetalhe" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>DETALHES</h5>
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-info-circle-fill me-2" style="color:var(--sc-green);"></i>Detalhes do Empreendimento
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body" id="detalhe-body"></div>
-      <div class="modal-footer">
-        <button class="btn-cyber-outline" data-bs-dismiss="modal">FECHAR</button>
-        <button class="btn-cyber" id="btn-detalhe-editar">
-          <i class="bi bi-pencil-fill me-1"></i>EDITAR
+      <div class="modal-body p-4" id="detalhe-body"></div>
+      <div class="modal-footer bg-light">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button class="btn btn-primary" id="btn-detalhe-editar">
+          <i class="bi bi-pencil-fill me-1"></i>Editar
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     MODAL — CONFIRMAR DELETE
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ MODAL CONFIRM DELETE ═══════════════════════════ -->
 <div class="modal fade" id="modalDel" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
-    <div class="modal-content">
+    <div class="modal-content border-0 shadow">
       <div class="modal-body p-4 text-center">
-        <div class="del-icon mb-3"><i class="bi bi-trash3-fill"></i></div>
-        <h5 class="mb-2" style="font-family:'Orbitron',sans-serif;font-size:.85rem;color:#fff;">
-          CONFIRMAR EXCLUSÃO
-        </h5>
-        <p style="font-size:.82rem;color:var(--text-dim);">Deseja remover o empreendimento:</p>
-        <p id="del-nome" style="font-family:'Share Tech Mono',monospace;color:var(--cyan);font-size:.85rem;word-break:break-all;"></p>
-        <p style="color:var(--red);font-size:.72rem;font-family:'Share Tech Mono',monospace;">
-          &#47;&#47; AÇÃO IRREVERSÍVEL
-        </p>
+        <div class="mb-3" style="font-size:3rem;color:#c62828;"><i class="bi bi-trash3-fill"></i></div>
+        <h5 class="fw-bold">Confirmar exclusão</h5>
+        <p class="text-muted mb-1">Deseja remover o empreendimento:</p>
+        <p class="fw-semibold" id="del-nome" style="color:#333;"></p>
+        <p class="text-danger" style="font-size:.83rem;">Esta ação não pode ser desfeita.</p>
         <div class="d-flex gap-2 justify-content-center mt-3">
-          <button class="btn-cyber-outline" data-bs-dismiss="modal">CANCELAR</button>
-          <button class="btn-cyber-del" id="btn-confirm-del">
-            <i class="bi bi-trash3 me-1"></i>EXCLUIR
+          <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-danger px-4" id="btn-confirm-del">
+            <i class="bi bi-trash3 me-1"></i>Excluir
           </button>
         </div>
       </div>
@@ -1109,390 +505,424 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     TOAST
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ TOAST ═══════════════════════════ -->
 <div class="toast-container">
-  <div id="app-toast" class="toast align-items-center" role="alert" aria-atomic="true">
+  <div id="toast" class="toast align-items-center border-0 text-white" role="alert" aria-live="assertive">
     <div class="d-flex">
-      <div class="toast-body d-flex align-items-center gap-2">
-        <span class="ti fs-5" id="toast-icon"></span>
-        <span id="toast-msg" style="font-family:'Rajdhani',sans-serif;font-weight:600;"></span>
+      <div class="toast-body d-flex align-items-center gap-2" id="toast-body">
+        <i class="bi bi-check-circle-fill"></i><span id="toast-msg"></span>
       </div>
-      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
-              style="filter:invert(1) sepia(1) saturate(5) hue-rotate(155deg);opacity:.5;"></button>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════════════════
      JAVASCRIPT
-═══════════════════════════════════════════════════════════ -->
+══════════════════════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-/* ─────────────────────────────────────────────────────────────
-   MATRIX RAIN
-───────────────────────────────────────────────────────────── */
-(function(){
-  const c = document.getElementById('matrix-canvas');
-  const ctx = c.getContext('2d');
-  const chars = 'アイウエオカキクケコ0123456789ABCDEF<>{}[]|/\\+-=*%$#@!?';
-  let cols, drops;
+/* ── Estado global ── */
+const state = {
+  page: 1,
+  data: [],
+  total: 0,
+  paginas: 1,
+};
 
-  function resize(){
-    c.width  = window.innerWidth;
-    c.height = window.innerHeight;
-    cols  = Math.floor(c.width / 18);
-    drops = Array(cols).fill(1);
-  }
-  resize();
-  window.addEventListener('resize', resize);
+let _buscarTimer = null;
+let _delId = null;
+let _modalEmp, _modalDel, _modalDetalhe, _toast;
 
-  function draw(){
-    ctx.fillStyle = 'rgba(4,6,15,0.05)';
-    ctx.fillRect(0,0,c.width,c.height);
-    ctx.fillStyle = '#00ff41';
-    ctx.font = '13px Share Tech Mono, monospace';
-    drops.forEach((y,i)=>{
-      const ch = chars[Math.floor(Math.random()*chars.length)];
-      const x  = i * 18;
-      ctx.fillStyle = y === 1
-        ? `rgba(0,240,255,${Math.random()*.8+.2})`
-        : `rgba(0,255,65,${Math.random()*.5+.1})`;
-      ctx.fillText(ch, x, y*18);
-      if(y*18 > c.height && Math.random() > .975) drops[i] = 0;
-      drops[i]++;
-    });
-  }
-  setInterval(draw, 60);
-})();
-
-/* ─────────────────────────────────────────────────────────────
-   STATE & BOOTSTRAP INSTANCES
-───────────────────────────────────────────────────────────── */
-const state = { page:1, total:0, paginas:1 };
-let _buscarTimer = null, _delId = null;
-let _modalEmp, _modalDel, _modalDetalhe, _bsToast;
-
-window.addEventListener('DOMContentLoaded', ()=>{
+/* ── Inicialização ── */
+window.addEventListener('DOMContentLoaded', () => {
   _modalEmp    = new bootstrap.Modal(document.getElementById('modalEmp'));
   _modalDel    = new bootstrap.Modal(document.getElementById('modalDel'));
   _modalDetalhe= new bootstrap.Modal(document.getElementById('modalDetalhe'));
-  _bsToast     = new bootstrap.Toast(document.getElementById('app-toast'), {delay:3500});
+  _toast       = new bootstrap.Toast(document.getElementById('toast'), { delay: 3200 });
 
-  document.getElementById('f-descricao').addEventListener('input', ()=>{
+  document.getElementById('f-descricao').addEventListener('input', () => {
     document.getElementById('char-count').textContent =
       document.getElementById('f-descricao').value.length;
   });
+
   document.getElementById('btn-confirm-del').addEventListener('click', confirmarDelete);
 
   buscar();
   carregarStats();
 });
 
-/* ─────────────────────────────────────────────────────────────
-   FILTROS
-───────────────────────────────────────────────────────────── */
-function agendarBusca(){ clearTimeout(_buscarTimer); _buscarTimer=setTimeout(()=>buscar(),420); }
-function filtrarSegmento(seg){ document.getElementById('f-segmento').value=seg; state.page=1; buscar(); }
-function limparFiltros(){
-  ['f-q','f-segmento','f-status'].forEach(id=>document.getElementById(id).value='');
-  state.page=1; buscar();
+/* ── Busca / filtros ── */
+function agendarBusca() {
+  clearTimeout(_buscarTimer);
+  _buscarTimer = setTimeout(() => buscar(), 420);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   BUSCA / LIST
-───────────────────────────────────────────────────────────── */
-async function buscar(pg){
-  if(pg!==undefined) state.page=pg;
+function limparFiltros() {
+  document.getElementById('f-q').value = '';
+  document.getElementById('f-segmento').value = '';
+  document.getElementById('f-status').value = '';
+  state.page = 1;
+  buscar();
+}
+
+function filtrarSegmento(seg) {
+  document.getElementById('f-segmento').value = seg;
+  state.page = 1;
+  buscar();
+}
+
+async function buscar(pg) {
+  if (pg !== undefined) state.page = pg;
   setLoading(true);
-  const q   = document.getElementById('f-q').value.trim();
+  const q = document.getElementById('f-q').value.trim();
   const seg = document.getElementById('f-segmento').value;
-  const st  = document.getElementById('f-status').value;
-  const pp  = document.getElementById('f-per-page').value;
-  const params = new URLSearchParams({page:state.page,per_page:pp});
-  if(q)   params.set('q',q);
-  if(seg) params.set('segmento',seg);
-  if(st)  params.set('status',st);
-  try{
-    const res  = await fetch('/api/empreendimentos?'+params);
+  const st = document.getElementById('f-status').value;
+  const pp = document.getElementById('f-per-page').value;
+
+  const params = new URLSearchParams({ page: state.page, per_page: pp });
+  if (q)   params.set('q', q);
+  if (seg) params.set('segmento', seg);
+  if (st)  params.set('status', st);
+
+  try {
+    const res = await fetch('/api/empreendimentos?' + params);
     const json = await res.json();
-    state.total   = json.total;
+    state.data   = json.dados;
+    state.total  = json.total;
     state.paginas = json.paginas;
-    renderTabela(json.dados);
-    renderPag(json);
-  }catch{ mostrarToast('Erro ao carregar dados.','err'); }
-  finally{ setLoading(false); }
+    renderTabela();
+    renderPaginacao(json);
+  } catch (e) {
+    mostrarToast('Erro ao carregar dados.', 'danger');
+  } finally {
+    setLoading(false);
+  }
 }
 
-async function carregarStats(){
-  try{
-    const [todos,ativos,inativos] = await Promise.all([
-      fetch('/api/empreendimentos?per_page=1').then(r=>r.json()),
-      fetch('/api/empreendimentos?status=ativo&per_page=1').then(r=>r.json()),
-      fetch('/api/empreendimentos?status=inativo&per_page=1').then(r=>r.json()),
+async function carregarStats() {
+  try {
+    const [todos, ativos, inativos] = await Promise.all([
+      fetch('/api/empreendimentos?per_page=1').then(r => r.json()),
+      fetch('/api/empreendimentos?status=ativo&per_page=1').then(r => r.json()),
+      fetch('/api/empreendimentos?status=inativo&per_page=1').then(r => r.json()),
     ]);
-    animCount('stat-total',   todos.total);
-    animCount('stat-ativos',  ativos.total);
-    animCount('stat-inativos',inativos.total);
+    document.getElementById('stat-total').textContent   = todos.total;
+    document.getElementById('stat-ativos').textContent  = ativos.total;
+    document.getElementById('stat-inativos').textContent= inativos.total;
 
-    const segs=['Tecnologia','Comércio','Indústria','Serviços','Agronegócio'];
-    let presentes=0;
-    await Promise.all(segs.map(async s=>{
-      const r=await fetch(`/api/empreendimentos?segmento=${encodeURIComponent(s)}&per_page=1`).then(x=>x.json());
-      const el=document.getElementById('sb-'+s);
-      if(el) el.textContent=r.total;
-      if(r.total>0) presentes++;
+    const segs = ['Tecnologia','Comércio','Indústria','Serviços','Agronegócio'];
+    let presentes = 0;
+    await Promise.all(segs.map(async s => {
+      const r = await fetch(`/api/empreendimentos?segmento=${encodeURIComponent(s)}&per_page=1`).then(x => x.json());
+      const el = document.getElementById('sb-' + s);
+      if (el) el.textContent = r.total;
+      if (r.total > 0) presentes++;
     }));
-    animCount('stat-segmentos',presentes);
-  }catch{}
+    document.getElementById('stat-segmentos').textContent = presentes;
+  } catch {}
 }
 
-function animCount(id,target){
-  if(target===0){ document.getElementById(id).textContent='0'; return; }
-  let v=0; const step=Math.ceil(target/20);
-  const el=document.getElementById(id);
-  const t=setInterval(()=>{
-    v=Math.min(v+step,target);
-    el.textContent=v;
-    if(v>=target) clearInterval(t);
-  },40);
-}
-
-/* ─────────────────────────────────────────────────────────────
-   RENDER TABLE
-───────────────────────────────────────────────────────────── */
-function renderTabela(data){
+/* ── Render tabela ── */
+function renderTabela() {
   const tbody = document.getElementById('tbl-body');
   const count = document.getElementById('tbl-count');
-  if(!data.length){
-    tbody.innerHTML=`<tr><td colspan="9" class="empty-state">
-      <i class="bi bi-inbox"></i>// NENHUM REGISTRO ENCONTRADO</td></tr>`;
-    count.textContent='';
+
+  if (!state.data.length) {
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">
+      <i class="bi bi-inbox"></i>Nenhum empreendimento encontrado.</td></tr>`;
+    count.textContent = '';
     return;
   }
-  count.textContent = `— ${state.total} REGISTRO${state.total!==1?'S':''}`;
-  tbody.innerHTML = data.map((e,i)=>`
-    <tr style="animation-delay:${i*35}ms">
-      <td><span class="tbl-id">${String(e.id).padStart(4,'0')}</span></td>
+
+  count.textContent = `— ${state.total} resultado${state.total !== 1 ? 's' : ''}`;
+
+  tbody.innerHTML = state.data.map(e => `
+    <tr>
+      <td class="text-muted ps-3" style="font-size:.8rem;">${e.id}</td>
       <td>
-        <div class="tbl-nome" title="${esc(e.nome)}">${esc(e.nome)}</div>
-        ${e.descricao?`<div class="tbl-desc" title="${esc(e.descricao)}">${esc(e.descricao)}</div>`:''}
+        <div class="fw-semibold" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+             title="${esc(e.nome)}">${esc(e.nome)}</div>
+        ${e.descricao ? `<small class="text-muted" style="font-size:.75rem;display:block;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(e.descricao)}</small>` : ''}
       </td>
-      <td style="font-size:.85rem;">${esc(e.empreendedor)}</td>
-      <td class="tbl-mun"><i class="bi bi-geo-alt-fill"></i> ${esc(e.municipio)}</td>
-      <td><span class="seg seg-${e.segmento}">${esc(e.segmento)}</span></td>
-      <td><a href="mailto:${esc(e.contato)}" style="color:var(--cyan);font-size:.8rem;text-decoration:none;font-family:'Share Tech Mono',monospace;">${esc(e.contato)}</a></td>
-      <td style="font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--text-dim);">${fmtData(e.data_fundacao)}</td>
-      <td><span class="status-${e.status}">${e.status==='ativo'?'ATIVO':'INATIVO'}</span></td>
+      <td>${esc(e.empreendedor)}</td>
       <td>
+        <i class="bi bi-geo-alt-fill text-secondary me-1" style="font-size:.75rem;"></i>${esc(e.municipio)}
+      </td>
+      <td><span class="seg seg-${e.segmento}">${esc(e.segmento)}</span></td>
+      <td><a href="mailto:${esc(e.contato)}" class="text-decoration-none" style="font-size:.85rem;">${esc(e.contato)}</a></td>
+      <td><span style="font-size:.82rem;color:#555;">${fmtData(e.data_fundacao)}</span></td>
+      <td><span class="badge-${e.status}">${e.status === 'ativo' ? 'Ativo' : 'Inativo'}</span></td>
+      <td class="pe-2">
         <div class="d-flex gap-1 justify-content-end">
-          <button class="btn-act view" title="Detalhes" onclick="verDetalhe(${e.id})"><i class="bi bi-eye-fill"></i></button>
-          <button class="btn-act edit" title="Editar"   onclick="abrirModalEditar(${e.id})"><i class="bi bi-pencil-fill"></i></button>
-          <button class="btn-act del"  title="Excluir"  onclick="pedirDelete(${e.id},'${esc(e.nome).replace(/'/g,"\\'")}')"><i class="bi bi-trash3-fill"></i></button>
+          <button class="btn-act" title="Ver detalhes" onclick="verDetalhe(${e.id})"><i class="bi bi-eye-fill"></i></button>
+          <button class="btn-act edit" title="Editar" onclick="abrirModalEditar(${e.id})"><i class="bi bi-pencil-fill"></i></button>
+          <button class="btn-act del" title="Excluir" onclick="pedirDelete(${e.id}, '${esc(e.nome)}')"><i class="bi bi-trash3-fill"></i></button>
         </div>
       </td>
-    </tr>`).join('');
+    </tr>
+  `).join('');
 }
 
-/* ─────────────────────────────────────────────────────────────
-   PAGINAÇÃO
-───────────────────────────────────────────────────────────── */
-function renderPag(json){
-  const bar  = document.getElementById('pag-bar');
-  const info = document.getElementById('pag-info');
-  const ul   = document.getElementById('pag-links');
-  if(json.paginas<=1){bar.style.display='none';return;}
-  bar.style.display='flex';
-  const ini=Math.min((json.pagina-1)*json.por_pagina+1,json.total);
-  const fim=Math.min(json.pagina*json.por_pagina,json.total);
-  info.textContent=`${ini}–${fim} / ${json.total}`;
-  let html=`<li class="${json.pagina===1?'disabled':''}">
-    <a onclick="buscar(${json.pagina-1});return false;" href="#"><i class="bi bi-chevron-left"></i></a></li>`;
-  pagesRange(json.pagina,json.paginas).forEach(p=>{
-    if(p==='…') html+=`<li class="disabled"><span>…</span></li>`;
-    else html+=`<li class="${p===json.pagina?'active':''}">
-      <a onclick="buscar(${p});return false;" href="#">${p}</a></li>`;
+/* ── Paginação ── */
+function renderPaginacao(json) {
+  const bar   = document.getElementById('pagination-bar');
+  const info  = document.getElementById('pagination-info');
+  const links = document.getElementById('pagination-links');
+
+  if (json.paginas <= 1) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+
+  const inicio = (json.pagina - 1) * json.por_pagina + 1;
+  const fim    = Math.min(json.pagina * json.por_pagina, json.total);
+  info.textContent = `Mostrando ${inicio}–${fim} de ${json.total}`;
+
+  let html = `
+    <li class="page-item ${json.pagina === 1 ? 'disabled' : ''}">
+      <a class="page-link" href="#" onclick="buscar(${json.pagina - 1});return false;">
+        <i class="bi bi-chevron-left"></i>
+      </a>
+    </li>`;
+
+  const range = pagesRange(json.pagina, json.paginas);
+  range.forEach(p => {
+    if (p === '…') {
+      html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
+    } else {
+      html += `<li class="page-item ${p === json.pagina ? 'active' : ''}">
+        <a class="page-link" href="#" onclick="buscar(${p});return false;">${p}</a></li>`;
+    }
   });
-  html+=`<li class="${json.pagina===json.paginas?'disabled':''}">
-    <a onclick="buscar(${json.pagina+1});return false;" href="#"><i class="bi bi-chevron-right"></i></a></li>`;
-  ul.innerHTML=html;
-}
-function pagesRange(cur,total){
-  if(total<=7) return Array.from({length:total},(_,i)=>i+1);
-  const p=[1];
-  if(cur>3) p.push('…');
-  for(let x=Math.max(2,cur-1);x<=Math.min(total-1,cur+1);x++) p.push(x);
-  if(cur<total-2) p.push('…');
-  p.push(total); return p;
+
+  html += `
+    <li class="page-item ${json.pagina === json.paginas ? 'disabled' : ''}">
+      <a class="page-link" href="#" onclick="buscar(${json.pagina + 1});return false;">
+        <i class="bi bi-chevron-right"></i>
+      </a>
+    </li>`;
+  links.innerHTML = html;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   MODAL CRIAR / EDITAR
-───────────────────────────────────────────────────────────── */
-function abrirModalCriar(){
-  document.getElementById('modal-title-text').textContent='NOVO EMPREENDIMENTO';
-  limparForm(); _modalEmp.show();
+function pagesRange(cur, total) {
+  if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+  const pages = [1];
+  if (cur > 3) pages.push('…');
+  for (let p = Math.max(2, cur - 1); p <= Math.min(total - 1, cur + 1); p++) pages.push(p);
+  if (cur < total - 2) pages.push('…');
+  pages.push(total);
+  return pages;
 }
 
-async function abrirModalEditar(id){
-  document.getElementById('modal-title-text').textContent='EDITAR EMPREENDIMENTO';
-  limparForm(); setLoading(true);
-  try{
-    const e=await fetch(`/api/empreendimentos/${id}`).then(r=>r.json());
-    document.getElementById('f-id').value            =e.id;
-    document.getElementById('f-nome').value          =e.nome;
-    document.getElementById('f-empreendedor').value  =e.empreendedor;
-    document.getElementById('f-municipio').value     =e.municipio;
-    document.getElementById('f-segmento-form').value =e.segmento;
-    document.getElementById('f-contato').value       =e.contato;
-    document.getElementById('f-status-form').value   =e.status;
-    document.getElementById('f-descricao').value     =e.descricao||'';
-    document.getElementById('f-data-fundacao').value =e.data_fundacao||'';
-    document.getElementById('char-count').textContent=(e.descricao||'').length;
-    _modalDetalhe.hide(); _modalEmp.show();
-  }catch{ mostrarToast('Erro ao carregar dados.','err'); }
-  finally{ setLoading(false); }
+/* ── Modal Criar ── */
+function abrirModalCriar() {
+  document.getElementById('modal-title-text').textContent = 'Novo Empreendimento';
+  limparForm();
+  _modalEmp.show();
 }
 
-async function salvar(){
-  const campos=['f-nome','f-empreendedor','f-municipio','f-contato'];
-  let valido=true;
-  campos.forEach(id=>{
-    const el=document.getElementById(id);
-    el.classList.toggle('is-invalid',!el.value.trim());
-    if(!el.value.trim()) valido=false;
-  });
-  const seg=document.getElementById('f-segmento-form');
-  seg.classList.toggle('is-invalid',!seg.value);
-  if(!seg.value) valido=false;
-  if(!valido) return;
-
-  const id=document.getElementById('f-id').value;
-  const payload={
-    nome:         document.getElementById('f-nome').value.trim(),
-    empreendedor: document.getElementById('f-empreendedor').value.trim(),
-    municipio:    document.getElementById('f-municipio').value.trim(),
-    segmento:     document.getElementById('f-segmento-form').value,
-    contato:      document.getElementById('f-contato').value.trim(),
-    status:       document.getElementById('f-status-form').value,
-    descricao:    document.getElementById('f-descricao').value.trim(),
-    data_fundacao:document.getElementById('f-data-fundacao').value||null,
-  };
-  const btn=document.getElementById('btn-salvar');
-  btn.disabled=true;
-  try{
-    const res=await fetch(id?`/api/empreendimentos/${id}`:'/api/empreendimentos',{
-      method:id?'PUT':'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    const json=await res.json();
-    if(!res.ok){mostrarToast(json.erro||'Erro ao salvar.','err');return;}
-    _modalEmp.hide();
-    mostrarToast(id?'REGISTRO ATUALIZADO.':'REGISTRO CADASTRADO.','ok');
-    buscar(); carregarStats();
-  }catch{mostrarToast('Erro de comunicação.','err');}
-  finally{btn.disabled=false;}
-}
-
-/* ─────────────────────────────────────────────────────────────
-   DETALHE
-───────────────────────────────────────────────────────────── */
-async function verDetalhe(id){
+/* ── Modal Editar ── */
+async function abrirModalEditar(id) {
+  document.getElementById('modal-title-text').textContent = 'Editar Empreendimento';
+  limparForm();
   setLoading(true);
-  try{
-    const e=await fetch(`/api/empreendimentos/${id}`).then(r=>r.json());
-    document.getElementById('detalhe-body').innerHTML=`
-      <div class="d-flex align-items-start gap-3 mb-4">
-        <div class="detail-icon">${segEmoji(e.segmento)}</div>
-        <div>
-          <div style="font-family:'Orbitron',sans-serif;font-size:.9rem;color:#fff;font-weight:700;">${esc(e.nome)}</div>
-          <div class="mt-1 d-flex gap-2 flex-wrap">
-            <span class="seg seg-${e.segmento}">${esc(e.segmento)}</span>
-            <span class="status-${e.status}">${e.status==='ativo'?'● ATIVO':'○ INATIVO'}</span>
+  try {
+    const e = await fetch(`/api/empreendimentos/${id}`).then(r => r.json());
+    document.getElementById('f-id').value              = e.id;
+    document.getElementById('f-nome').value            = e.nome;
+    document.getElementById('f-empreendedor').value    = e.empreendedor;
+    document.getElementById('f-municipio').value       = e.municipio;
+    document.getElementById('f-segmento-form').value   = e.segmento;
+    document.getElementById('f-contato').value         = e.contato;
+    document.getElementById('f-status-form').value     = e.status;
+    document.getElementById('f-descricao').value       = e.descricao || '';
+    document.getElementById('f-data-fundacao').value   = e.data_fundacao || '';
+    document.getElementById('char-count').textContent  = (e.descricao || '').length;
+    _modalDetalhe.hide();
+    _modalEmp.show();
+  } catch {
+    mostrarToast('Erro ao carregar dados.', 'danger');
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* ── Salvar (criar ou editar) ── */
+async function salvar() {
+  const form = document.getElementById('form-emp');
+
+  // Validação HTML5
+  const campos = ['f-nome','f-empreendedor','f-municipio','f-contato'];
+  let valido = true;
+  campos.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.toggle('is-invalid', !el.value.trim());
+    if (!el.value.trim()) valido = false;
+  });
+  const seg = document.getElementById('f-segmento-form');
+  seg.classList.toggle('is-invalid', !seg.value);
+  if (!seg.value) valido = false;
+
+  if (!valido) return;
+
+  const id = document.getElementById('f-id').value;
+  const payload = {
+    nome:          document.getElementById('f-nome').value.trim(),
+    empreendedor:  document.getElementById('f-empreendedor').value.trim(),
+    municipio:     document.getElementById('f-municipio').value.trim(),
+    segmento:      document.getElementById('f-segmento-form').value,
+    contato:       document.getElementById('f-contato').value.trim(),
+    status:        document.getElementById('f-status-form').value,
+    descricao:     document.getElementById('f-descricao').value.trim(),
+    data_fundacao: document.getElementById('f-data-fundacao').value || null,
+  };
+
+  const btn = document.getElementById('btn-salvar');
+  btn.disabled = true;
+  const metodo = id ? 'PUT' : 'POST';
+  const url    = id ? `/api/empreendimentos/${id}` : '/api/empreendimentos';
+
+  try {
+    const res = await fetch(url, {
+      method: metodo,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    if (!res.ok) { mostrarToast(json.erro || 'Erro ao salvar.', 'danger'); return; }
+    _modalEmp.hide();
+    mostrarToast(id ? 'Empreendimento atualizado com sucesso.' : 'Empreendimento cadastrado com sucesso.', 'success');
+    buscar();
+    carregarStats();
+  } catch {
+    mostrarToast('Erro de comunicação com o servidor.', 'danger');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ── Detalhe ── */
+async function verDetalhe(id) {
+  setLoading(true);
+  try {
+    const e = await fetch(`/api/empreendimentos/${id}`).then(r => r.json());
+    const corpo = document.getElementById('detalhe-body');
+    corpo.innerHTML = `
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="d-flex align-items-start gap-3">
+            <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:56px;height:56px;background:#e8f5e9;font-size:1.7rem;">
+              ${segIcon(e.segmento)}
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0">${esc(e.nome)}</h5>
+              <span class="seg seg-${e.segmento}">${esc(e.segmento)}</span>
+              <span class="ms-1 badge-${e.status}">${e.status === 'ativo' ? 'Ativo' : 'Inativo'}</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row g-3 mb-3">
-        ${dField('EMPREENDEDOR(A)','person-fill',esc(e.empreendedor))}
-        ${dField('MUNICÍPIO','geo-alt-fill',esc(e.municipio))}
-        ${dField('CONTATO','envelope-fill',`<a href="mailto:${esc(e.contato)}" style="color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:.8rem;">${esc(e.contato)}</a>`)}
-        ${e.data_fundacao?dField('FUNDAÇÃO','calendar-fill',fmtData(e.data_fundacao)):''}
-      </div>
-      ${e.descricao?`<div class="detail-desc">${esc(e.descricao)}</div>`:''}
-      <div class="detail-meta">
-        CADASTRO: ${fmtDt(e.created_at)} &nbsp;|&nbsp; ATUALIZAÇÃO: ${fmtDt(e.updated_at)} &nbsp;|&nbsp; ID: ${String(e.id).padStart(4,'0')}
+        ${linha('Empreendedor(a)', esc(e.empreendedor), 'person-fill')}
+        ${linha('Município', esc(e.municipio), 'geo-alt-fill')}
+        ${linha('Contato', `<a href="mailto:${esc(e.contato)}">${esc(e.contato)}</a>`, 'envelope-fill')}
+        ${e.data_fundacao ? linha('Data de fundação', fmtData(e.data_fundacao), 'calendar-fill') : ''}
+        ${e.descricao ? `
+          <div class="col-12">
+            <div class="p-3 rounded-3" style="background:#f8f9fa;">
+              <small class="text-muted fw-semibold d-block mb-1"><i class="bi bi-card-text me-1"></i>Descrição</small>
+              <span style="font-size:.9rem;">${esc(e.descricao)}</span>
+            </div>
+          </div>` : ''}
+        <div class="col-12">
+          <small class="text-muted">Cadastrado: ${fmtDt(e.created_at)} &nbsp;|&nbsp; Atualizado: ${fmtDt(e.updated_at)}</small>
+        </div>
       </div>`;
-    document.getElementById('btn-detalhe-editar').onclick=()=>abrirModalEditar(e.id);
+    document.getElementById('btn-detalhe-editar').onclick = () => abrirModalEditar(e.id);
     _modalDetalhe.show();
-  }catch{mostrarToast('Erro ao carregar detalhes.','err');}
-  finally{setLoading(false);}
-}
-function dField(lbl,icon,val){
-  return `<div class="col-12 col-md-6 detail-field">
-    <small><i class="bi bi-${icon}"></i> ${lbl}</small>
-    <div>${val}</div></div>`;
+  } catch {
+    mostrarToast('Erro ao carregar detalhes.', 'danger');
+  } finally {
+    setLoading(false);
+  }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   DELETE
-───────────────────────────────────────────────────────────── */
-function pedirDelete(id,nome){
-  _delId=id;
-  document.getElementById('del-nome').textContent=nome;
+function linha(lbl, val, icon) {
+  return `<div class="col-12 col-md-6">
+    <small class="text-muted fw-semibold"><i class="bi bi-${icon} me-1"></i>${lbl}</small>
+    <div style="font-size:.93rem;margin-top:.15rem;">${val}</div>
+  </div>`;
+}
+
+/* ── Delete ── */
+function pedirDelete(id, nome) {
+  _delId = id;
+  document.getElementById('del-nome').textContent = nome;
   _modalDel.show();
 }
-async function confirmarDelete(){
-  if(!_delId) return;
-  const btn=document.getElementById('btn-confirm-del');
-  btn.disabled=true;
-  try{
-    const res=await fetch(`/api/empreendimentos/${_delId}`,{method:'DELETE'});
-    const json=await res.json();
-    if(!res.ok){mostrarToast(json.erro||'Erro.','err');return;}
+
+async function confirmarDelete() {
+  if (!_delId) return;
+  const btn = document.getElementById('btn-confirm-del');
+  btn.disabled = true;
+  try {
+    const res = await fetch(`/api/empreendimentos/${_delId}`, { method: 'DELETE' });
+    const json = await res.json();
+    if (!res.ok) { mostrarToast(json.erro || 'Erro ao excluir.', 'danger'); return; }
     _modalDel.hide();
-    mostrarToast('REGISTRO REMOVIDO.','ok');
-    buscar(); carregarStats();
-  }catch{mostrarToast('Erro de comunicação.','err');}
-  finally{btn.disabled=false; _delId=null;}
+    mostrarToast(json.mensagem || 'Registro removido.', 'success');
+    buscar();
+    carregarStats();
+  } catch {
+    mostrarToast('Erro de comunicação com o servidor.', 'danger');
+  } finally {
+    btn.disabled = false;
+    _delId = null;
+  }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   HELPERS
-───────────────────────────────────────────────────────────── */
-function limparForm(){
+/* ── Helpers ── */
+function limparForm() {
   ['f-id','f-nome','f-empreendedor','f-municipio','f-contato','f-descricao','f-data-fundacao']
-    .forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-segmento-form').value='';
-  document.getElementById('f-status-form').value='ativo';
-  document.getElementById('char-count').textContent='0';
-  document.querySelectorAll('#form-emp .is-invalid').forEach(el=>el.classList.remove('is-invalid'));
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-segmento-form').value = '';
+  document.getElementById('f-status-form').value = 'ativo';
+  document.getElementById('char-count').textContent = '0';
+  document.querySelectorAll('#form-emp .is-invalid').forEach(el => el.classList.remove('is-invalid'));
 }
-function setLoading(on){
-  document.getElementById('loading-overlay').style.display=on?'flex':'none';
+
+function setLoading(on) {
+  document.getElementById('loading-overlay').style.display = on ? 'flex' : 'none';
 }
-function mostrarToast(msg,tipo='ok'){
-  const el   =document.getElementById('app-toast');
-  const icon =document.getElementById('toast-icon');
-  const msgEl=document.getElementById('toast-msg');
-  el.className  =`toast align-items-center ${tipo}`;
-  el.style.color=tipo==='ok'?'var(--green)':'var(--red)';
-  icon.className=`ti bi ${tipo==='ok'?'bi-check-circle-fill':'bi-exclamation-triangle-fill'}`;
-  msgEl.textContent=msg;
-  _bsToast.show();
+
+function mostrarToast(msg, tipo = 'success') {
+  const el = document.getElementById('toast');
+  const body = document.getElementById('toast-body');
+  el.className = `toast align-items-center border-0 text-white bg-${tipo === 'success' ? 'success' : 'danger'}`;
+  body.innerHTML = `<i class="bi bi-${tipo === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'} me-2"></i>${msg}`;
+  _toast.show();
 }
-function esc(s){
-  if(!s) return '';
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function fmtData(d){ if(!d) return '—'; const[y,m,dia]=d.split('-'); return `${dia}/${m}/${y}`; }
-function fmtDt(iso){
-  if(!iso) return '—';
-  return new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+
+function fmtData(d) {
+  if (!d) return '—';
+  const [y,m,dia] = d.split('-');
+  return `${dia}/${m}/${y}`;
 }
-function segEmoji(s){
-  return{Tecnologia:'💻',Comércio:'🛒',Indústria:'🏭',Serviços:'💼',Agronegócio:'🌾'}[s]||'🏢';
+
+function fmtDt(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('pt-BR', { dateStyle:'short', timeStyle:'short' });
+}
+
+function segIcon(s) {
+  const icons = {
+    'Tecnologia':'💻','Comércio':'🛒','Indústria':'🏭','Serviços':'💼','Agronegócio':'🌾'
+  };
+  return icons[s] || '🏢';
 }
 </script>
 </body>
