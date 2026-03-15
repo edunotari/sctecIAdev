@@ -101,16 +101,16 @@
     position:relative;
   }
   .brand-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin-bottom:.6rem;}
+  .brand-logo-wrap>a{display:flex;line-height:0;}
+  .brand-logo-wrap>a:hover .sidebar-sctec-logo{opacity:.85;}
   .sidebar-sctec-logo{width:100%;max-width:162px;height:auto;filter:drop-shadow(0 0 8px var(--green));}
-  /* Subtítulo com caracteres girando */
+  /* Subtítulo abaixo do logo */
   .brand-subtitle{
     display:flex;flex-wrap:wrap;justify-content:center;gap:0;
     font-family:'Share Tech Mono',monospace;
     font-size:.48rem;letter-spacing:.18em;text-transform:uppercase;
     color:var(--cyan);text-shadow:var(--gc);
   }
-  .brand-subtitle .sc{display:inline-block;}
-  @keyframes spinChar{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
   /* Badge trilha */
   .trilha-badge{
@@ -730,8 +730,10 @@
   <!-- BRAND -->
   <div class="brand">
     <div class="brand-logo-wrap">
-      <img src="{{ url_for('static', filename='sctec-logo.svg') }}" alt="SCTEC" class="sidebar-sctec-logo">
-      <div class="brand-subtitle" id="brand-subtitle">Empreendimentos SC</div>
+      <a href="https://sctec.scti.sc.gov.br/" target="_blank" rel="noopener noreferrer">
+        <img src="{{ url_for('static', filename='sctec-logo.svg') }}" alt="SCTEC" class="sidebar-sctec-logo">
+      </a>
+      <div class="brand-subtitle">Empreendimentos SC</div>
     </div>
 
     <div class="trilha-badge">
@@ -1486,18 +1488,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
   buscar();
   carregarStats();
-
-  /* Caracteres do subtítulo da sidebar girando */
-  (function(){
-    const el = document.getElementById('brand-subtitle');
-    if(!el) return;
-    el.innerHTML = el.textContent.split('').map(ch=>{
-      if(ch===' ') return '<span class="sc" style="width:.45em">&nbsp;</span>';
-      const dur  = (9 + Math.random()*14).toFixed(2);
-      const del  = -(Math.random()*12).toFixed(2);
-      return `<span class="sc" style="animation:spinChar ${dur}s ${del}s linear infinite">${ch}</span>`;
-    }).join('');
-  })();
 });
 
 /* ─────────────────────────────────────────────────────────────
