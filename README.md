@@ -9,7 +9,7 @@
 
 > **Assista à apresentação completa da solução:**
 >
-> [![Assistir ao vídeo pitch]([URL_DO_VIDEO_AQUI](https://youtu.be/t0jomEHGy0E)]
+> [Assistir ao vídeo pitch](https://youtu.be/t0jomEHGy0E)
 
 ---
 
