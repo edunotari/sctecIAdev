@@ -100,23 +100,17 @@
     border-bottom:1px solid rgba(0,240,255,.1);
     position:relative;
   }
-  .brand-logo{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem;}
-  .logo-sc-wrap{flex-shrink:0;}
-
-  /* Logo SVG SCTEC — mapa SC com grafo de rede */
-  .logo-sc{width:54px;height:54px;filter:drop-shadow(0 0 10px var(--green));}
-
-  .brand-title{
-    font-family:'Orbitron',sans-serif;
-    font-size:.78rem;font-weight:900;letter-spacing:.14em;
-    color:var(--cyan);line-height:1.25;
-    text-shadow:var(--gc);
+  .brand-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin-bottom:.6rem;}
+  .sidebar-sctec-logo{width:100%;max-width:162px;height:auto;filter:drop-shadow(0 0 8px var(--green));}
+  /* Subtítulo com caracteres girando */
+  .brand-subtitle{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:0;
+    font-family:'Share Tech Mono',monospace;
+    font-size:.48rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--cyan);text-shadow:var(--gc);
   }
-  .brand-title span{
-    display:block;font-size:.58rem;
-    color:var(--magenta);letter-spacing:.12em;
-    text-shadow:var(--gm);
-  }
+  .brand-subtitle .sc{display:inline-block;}
+  @keyframes spinChar{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
   /* Badge trilha */
   .trilha-badge{
@@ -735,51 +729,9 @@
 
   <!-- BRAND -->
   <div class="brand">
-    <div class="brand-logo">
-      <!-- Logo SCTEC — mapa SC com grafo de rede -->
-      <div class="logo-sc-wrap">
-        <svg class="logo-sc" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- SC state silhouette (simplified) -->
-          <path d="M4 19 L12 10 L28 8 L43 12 L51 20 L50 30 L44 41 L35 49 L20 46 L9 38 L4 27 Z"
-            fill="rgba(0,255,157,.07)" stroke="#00ff9d" stroke-width=".8" stroke-opacity=".45"/>
-          <!-- Outer ring edges -->
-          <line x1="10" y1="21" x2="19" y2="14" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="19" y1="14" x2="30" y2="11" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="30" y1="11" x2="42" y2="15" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="42" y1="15" x2="48" y2="25" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="48" y1="25" x2="43" y2="38" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="43" y1="38" x2="32" y2="46" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="32" y1="46" x2="16" y2="40" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="16" y1="40" x2="10" y2="21" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <!-- Hub connections (brighter) -->
-          <line x1="27" y1="27" x2="10" y2="21" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="19" y2="14" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="30" y2="11" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="42" y2="15" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="48" y2="25" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="43" y2="38" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="32" y2="46" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="16" y2="40" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <!-- Satellite nodes -->
-          <circle cx="10" cy="21" r="2.6" fill="#00ff9d"/>
-          <circle cx="19" cy="14" r="2.6" fill="#00ff9d"/>
-          <circle cx="30" cy="11" r="2.6" fill="#00ff9d"/>
-          <circle cx="42" cy="15" r="2.6" fill="#00ff9d"/>
-          <circle cx="48" cy="25" r="2.6" fill="#00ff9d"/>
-          <circle cx="43" cy="38" r="2.6" fill="#00ff9d"/>
-          <circle cx="32" cy="46" r="2.6" fill="#00ff9d"/>
-          <circle cx="16" cy="40" r="2.6" fill="#00ff9d"/>
-          <!-- Central hub node -->
-          <circle cx="27" cy="27" r="5"   fill="#00ff9d"/>
-          <circle cx="27" cy="27" r="2.8" fill="#04060f"/>
-        </svg>
-      </div>
-      <div>
-        <div class="brand-title">
-          <b style="color:var(--green)">SC</b><b style="color:#fff">TEC</b>
-          <span>EMPREENDIMENTOS SC</span>
-        </div>
-      </div>
+    <div class="brand-logo-wrap">
+      <img src="{{ url_for('static', filename='sctec-logo.svg') }}" alt="SCTEC" class="sidebar-sctec-logo">
+      <div class="brand-subtitle" id="brand-subtitle">Empreendimentos SC</div>
     </div>
 
     <div class="trilha-badge">
@@ -1534,6 +1486,18 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
   buscar();
   carregarStats();
+
+  /* Caracteres do subtítulo da sidebar girando */
+  (function(){
+    const el = document.getElementById('brand-subtitle');
+    if(!el) return;
+    el.innerHTML = el.textContent.split('').map(ch=>{
+      if(ch===' ') return '<span class="sc" style="width:.45em">&nbsp;</span>';
+      const dur  = (9 + Math.random()*14).toFixed(2);
+      const del  = -(Math.random()*12).toFixed(2);
+      return `<span class="sc" style="animation:spinChar ${dur}s ${del}s linear infinite">${ch}</span>`;
+    }).join('');
+  })();
 });
 
 /* ─────────────────────────────────────────────────────────────
