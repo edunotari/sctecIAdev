@@ -704,36 +704,20 @@
     width:1px;height:50px;
     background:linear-gradient(to bottom,transparent,rgba(0,240,255,.25),transparent);
   }
-  /* SCTEC icon in footer */
+  /* Link wrapper nos logos do footer */
+  .footer-logo a{display:flex;align-items:center;text-decoration:none;}
+  .footer-logo a:hover img{opacity:.85;}
+  /* SCTEC logo no footer */
   .footer-sctec-icon{
-    width:52px;height:52px;
+    height:48px;width:auto;
     filter:drop-shadow(0 0 9px var(--green));
     flex-shrink:0;
   }
-  .footer-sctec-text .ft-main{
-    font-family:'Orbitron',sans-serif;
-    font-size:1.35rem;font-weight:900;line-height:1;letter-spacing:.07em;
-  }
-  .footer-sctec-text .ft-tagline{
-    font-size:.46rem;color:rgba(255,255,255,.3);
-    letter-spacing:.15em;font-family:'Share Tech Mono',monospace;
-    text-transform:uppercase;margin-top:.35rem;
-  }
-  /* GOVSC flag in footer */
+  /* GOVSC logo no footer */
   .footer-govsc-flag{
-    width:66px;height:44px;border-radius:3px;
+    height:44px;width:auto;border-radius:3px;
     flex-shrink:0;
     filter:drop-shadow(0 0 5px rgba(0,160,80,.3));
-  }
-  .footer-govsc-text .fg-over{
-    font-size:.46rem;color:rgba(255,255,255,.35);
-    letter-spacing:.12em;font-family:'Share Tech Mono',monospace;
-    text-transform:uppercase;
-  }
-  .footer-govsc-text .fg-main{
-    font-family:'Orbitron',sans-serif;
-    font-size:.74rem;font-weight:700;letter-spacing:.07em;
-    color:rgba(255,255,255,.82);line-height:1.25;margin-top:.2rem;
   }
   </style>
 </head>
@@ -1027,86 +1011,18 @@
 
       <!-- ── Logo SCTEC ─────────────────────────────────── -->
       <div class="footer-logo">
-        <svg class="footer-sctec-icon" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- SC state silhouette -->
-          <path d="M4 19 L12 10 L28 8 L43 12 L51 20 L50 30 L44 41 L35 49 L20 46 L9 38 L4 27 Z"
-            fill="rgba(0,255,157,.07)" stroke="#00ff9d" stroke-width=".8" stroke-opacity=".45"/>
-          <!-- Outer ring edges -->
-          <line x1="10" y1="21" x2="19" y2="14" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="19" y1="14" x2="30" y2="11" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="30" y1="11" x2="42" y2="15" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="42" y1="15" x2="48" y2="25" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="48" y1="25" x2="43" y2="38" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="43" y1="38" x2="32" y2="46" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="32" y1="46" x2="16" y2="40" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <line x1="16" y1="40" x2="10" y2="21" stroke="#00ff9d" stroke-width=".9" opacity=".45"/>
-          <!-- Hub connections -->
-          <line x1="27" y1="27" x2="10" y2="21" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="19" y2="14" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="30" y2="11" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="42" y2="15" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="48" y2="25" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="43" y2="38" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="32" y2="46" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <line x1="27" y1="27" x2="16" y2="40" stroke="#00ff9d" stroke-width="1.1" opacity=".7"/>
-          <!-- Satellite nodes -->
-          <circle cx="10" cy="21" r="2.6" fill="#00ff9d"/>
-          <circle cx="19" cy="14" r="2.6" fill="#00ff9d"/>
-          <circle cx="30" cy="11" r="2.6" fill="#00ff9d"/>
-          <circle cx="42" cy="15" r="2.6" fill="#00ff9d"/>
-          <circle cx="48" cy="25" r="2.6" fill="#00ff9d"/>
-          <circle cx="43" cy="38" r="2.6" fill="#00ff9d"/>
-          <circle cx="32" cy="46" r="2.6" fill="#00ff9d"/>
-          <circle cx="16" cy="40" r="2.6" fill="#00ff9d"/>
-          <!-- Central hub -->
-          <circle cx="27" cy="27" r="5"   fill="#00ff9d"/>
-          <circle cx="27" cy="27" r="2.8" fill="#04060f"/>
-        </svg>
-        <div class="footer-sctec-text">
-          <div class="ft-main">
-            <span style="color:var(--green)">SC</span><span style="color:var(--magenta)">TEC</span>
-          </div>
-          <div class="ft-tagline">Preparando pessoas para o agora</div>
-        </div>
+        <a href="https://sctec.scti.sc.gov.br/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='sctec-logo.svg') }}" alt="SCTEC" class="footer-sctec-icon">
+        </a>
       </div>
 
       <div class="footer-sep"></div>
 
       <!-- ── Logo Governo de Santa Catarina ────────────── -->
       <div class="footer-logo">
-        <svg class="footer-govsc-flag" viewBox="0 0 93 62" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Flag background (white) -->
-          <rect width="93" height="62" rx="4" fill="#f4f4f0" stroke="rgba(0,150,70,.25)" stroke-width=".8"/>
-          <!-- Top green stripe -->
-          <rect x=".4" y=".4" width="92.2" height="13" rx="3.6" fill="#2e7d4f"/>
-          <rect x=".4" y="7"   width="92.2" height="6.4"  fill="#2e7d4f"/>
-          <!-- Bottom green stripe -->
-          <rect x=".4" y="48.6" width="92.2" height="13.4" rx="3.6" fill="#2e7d4f"/>
-          <rect x=".4" y="48.6" width="92.2" height="7"    fill="#2e7d4f"/>
-          <!-- White central field -->
-          <rect x=".4" y="13.4" width="92.2" height="35.2" fill="#f4f4f0"/>
-          <!-- Red horizontal band -->
-          <rect x=".4" y="24"   width="92.2" height="14"   fill="#b01820"/>
-          <!-- White diagonal cross on red band -->
-          <line x1="0" y1="24" x2="93" y2="38" stroke="white" stroke-width="4.5" opacity=".75"/>
-          <line x1="0" y1="38" x2="93" y2="24" stroke="white" stroke-width="4.5" opacity=".75"/>
-          <!-- Central green lozenge -->
-          <ellipse cx="46.5" cy="31" rx="16" ry="12" fill="#2e7d4f"/>
-          <!-- Inner white ring -->
-          <ellipse cx="46.5" cy="31" rx="12"  ry="8.5" fill="none" stroke="white" stroke-width=".9" opacity=".85"/>
-          <!-- Central emblem (simplified star / coat of arms) -->
-          <circle cx="46.5" cy="31" r="2.8" fill="white"/>
-          <circle cx="46.5" cy="23.5" r="1.2" fill="white" opacity=".75"/>
-          <circle cx="53.5" cy="27"   r="1.2" fill="white" opacity=".75"/>
-          <circle cx="53.5" cy="35"   r="1.2" fill="white" opacity=".75"/>
-          <circle cx="46.5" cy="38.5" r="1.2" fill="white" opacity=".75"/>
-          <circle cx="39.5" cy="35"   r="1.2" fill="white" opacity=".75"/>
-          <circle cx="39.5" cy="27"   r="1.2" fill="white" opacity=".75"/>
-        </svg>
-        <div class="footer-govsc-text">
-          <div class="fg-over">Governo do Estado de</div>
-          <div class="fg-main">SANTA<br>CATARINA</div>
-        </div>
+        <a href="https://www.sc.gov.br/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='govsc.png') }}" alt="Governo de Santa Catarina" class="footer-govsc-flag">
+        </a>
       </div>
 
     </div>
