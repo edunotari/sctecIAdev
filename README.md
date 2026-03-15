@@ -8,6 +8,8 @@
 ## Vídeo Pitch
 
 > **Assista à apresentação completa da solução:**
+>
+> [![Watch the video](https://img.youtube.com/vi/T-D1KVIuvjA/maxresdefault.jpg)](https://youtu.be/t0jomEHGy0E)
 > 
 >[![Video Title](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=t0jomEHGy0E)
 
