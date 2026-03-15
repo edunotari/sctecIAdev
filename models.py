@@ -28,7 +28,7 @@ CAMPOS_OPCIONAIS = [
     # setor: Serviços
     "serv_conselhos", "serv_portfolio",
     # setor: Agronegócio
-    "agro_car", "agro_armazenagem",
+    "agro_car", "agro_mapa", "agro_armazenagem",
     # documentação
     "checklist_docs",
 ]
@@ -89,6 +89,7 @@ class Empreendimento(db.Model):
 
     # ── Campos Específicos — Agronegócio ──────────────────────────
     agro_car        = db.Column(db.String(100), nullable=True)
+    agro_mapa       = db.Column(db.String(200), nullable=True)
     agro_armazenagem= db.Column(db.Text,        nullable=True)
 
     # ── Documentação ──────────────────────────────────────────────
@@ -143,6 +144,7 @@ class Empreendimento(db.Model):
             "serv_conselhos":      self.serv_conselhos,
             "serv_portfolio":      self.serv_portfolio,
             "agro_car":            self.agro_car,
+            "agro_mapa":           self.agro_mapa,
             "agro_armazenagem":    self.agro_armazenagem,
             # extras
             "descricao":      self.descricao,

@@ -86,7 +86,7 @@ def _migrar_colunas(app):
         "com_subst_tributaria": "TEXT", "com_logistica": "TEXT",
         "ind_licencas": "TEXT", "ind_capacidade": "TEXT",
         "serv_conselhos": "TEXT", "serv_portfolio": "TEXT",
-        "agro_car": "VARCHAR(100)", "agro_armazenagem": "TEXT",
+        "agro_car": "VARCHAR(100)", "agro_mapa": "VARCHAR(200)", "agro_armazenagem": "TEXT",
         "checklist_docs": "TEXT",
     }
     engine = db.engine

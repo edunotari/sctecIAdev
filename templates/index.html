@@ -1488,6 +1488,12 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
   buscar();
   carregarStats();
+
+  /* Validação em tempo real ao sair de cada campo */
+  Object.keys(_REGRAS).forEach(id=>{
+    document.getElementById(id)?.addEventListener('blur',()=>_REGRAS[id]());
+    document.getElementById(id)?.addEventListener('change',()=>_REGRAS[id]());
+  });
 });
 
 /* ─────────────────────────────────────────────────────────────
@@ -1687,7 +1693,7 @@ async function abrirModalEditar(id){
     set('f-serv-cons',  e.serv_conselhos);
     set('f-serv-port',  e.serv_portfolio);
     set('f-agro-car',   e.agro_car);
-    set('f-agro-mapa',  e.agro_armazenagem);
+    set('f-agro-mapa',  e.agro_mapa);
     set('f-agro-arm',   e.agro_armazenagem);
 
     // documentação e descrição
@@ -1703,18 +1709,170 @@ async function abrirModalEditar(id){
   finally{ setLoading(false); }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   VALIDAÇÃO DO FORMULÁRIO
+═══════════════════════════════════════════════════════════ */
+
+const VMSG = {
+  obrigatorio : 'Campo obrigatório.',
+  minLen      : n => `Mínimo ${n} caracteres.`,
+  maxLen      : n => `Máximo ${n} caracteres.`,
+  email       : 'Informe um e-mail válido (ex: nome@dominio.com.br).',
+  telefone    : 'Informe um telefone válido, ex: (48) 99999-9999.',
+  cnpj        : 'CNPJ inválido. Use o formato XX.XXX.XXX/XXXX-XX.',
+  cnae        : 'Informe o CNAE no formato XXXX-X/XX (ex: 6201-5/01).',
+  url         : 'Informe uma URL válida (https://...) ou coordenadas (lat,lng).',
+  data        : 'Data inválida.',
+  dataFutura  : 'A data não pode ser futura.',
+  alfanum     : 'Apenas letras, números, hifens e pontos.',
+  car         : 'Informe o CAR no formato UF-GEOCÓDIGO-SEQUÊNCIA (ex: SC-4209102-XXXX...).',
+};
+
+const VRE = {
+  email  : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+  tel    : /^\(?\d{2}\)?\s?\d{4,5}[-\s]?\d{4}$/,
+  cnae   : /^\d{4}-\d\/\d{2}$/,
+  url    : /^https?:\/\/.+/,
+  latLng : /^-?\d{1,3}(\.\d+)?,\s*-?\d{1,3}(\.\d+)?$/,
+  alfanum: /^[A-Za-zÀ-ú0-9\s.\-\/]+$/,
+  car    : /^[A-Z]{2}-\d{7}-.+$/,
+};
+
+function _cnpjValido(raw){
+  const n=raw.replace(/\D/g,'');
+  if(n.length!==14||/^(\d)\1+$/.test(n)) return false;
+  const c=(n,l)=>{
+    let s=0,p=l-7;
+    for(let i=l;i>=1;i--){s+=+n[l-i]*p--;if(p<2)p=9;}
+    return s%11<2?0:11-s%11;
+  };
+  return c(n,12)===+n[12]&&c(n,13)===+n[13];
+}
+
+function _setErro(id,msg){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.add('is-invalid');
+  el.classList.remove('is-valid');
+  let fb=document.getElementById(id+'-vfb');
+  if(!fb){fb=document.createElement('div');fb.id=id+'-vfb';fb.className='invalid-feedback';el.insertAdjacentElement('afterend',fb);}
+  fb.textContent=msg;
+}
+function _setOk(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.remove('is-invalid');
+  el.classList.add('is-valid');
+  const fb=document.getElementById(id+'-vfb');
+  if(fb)fb.textContent='';
+}
+function _limpar(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.remove('is-invalid','is-valid');
+  const fb=document.getElementById(id+'-vfb');
+  if(fb)fb.textContent='';
+}
+
+/* Valida campo texto/textarea */
+function _vCampo(id,{required=false,minLen=0,maxLen=0,checks=[]}={}){
+  const el=document.getElementById(id);
+  if(!el)return true;
+  const v=el.value.trim();
+  if(!v){
+    if(required){_setErro(id,VMSG.obrigatorio);return false;}
+    _limpar(id);return true;
+  }
+  if(minLen&&v.length<minLen){_setErro(id,VMSG.minLen(minLen));return false;}
+  if(maxLen&&v.length>maxLen){_setErro(id,VMSG.maxLen(maxLen));return false;}
+  for(const{test,msg}of checks){if(!test(v)){_setErro(id,msg);return false;}}
+  _setOk(id);return true;
+}
+
+/* Valida select */
+function _vSelect(id,required=false){
+  const el=document.getElementById(id);
+  if(!el)return true;
+  if(required&&!el.value){_setErro(id,VMSG.obrigatorio);return false;}
+  if(el.value)_setOk(id);else _limpar(id);
+  return true;
+}
+
+/* Valida input[type=date] */
+function _vData(id,{required=false,naoFutura=true}={}){
+  const el=document.getElementById(id);
+  if(!el)return true;
+  const v=el.value;
+  if(!v){
+    if(required){_setErro(id,VMSG.obrigatorio);return false;}
+    _limpar(id);return true;
+  }
+  const d=new Date(v+'T00:00:00');
+  if(isNaN(d)){_setErro(id,VMSG.data);return false;}
+  if(naoFutura&&d>new Date()){_setErro(id,VMSG.dataFutura);return false;}
+  _setOk(id);return true;
+}
+
+/* Regras por campo — usadas tanto no submit quanto no blur */
+const _REGRAS = {
+  /* Sec 01 — Obrigatórios */
+  'f-nome'        : ()=>_vCampo('f-nome',{required:true,minLen:2,maxLen:200}),
+  'f-status-form' : ()=>_vSelect('f-status-form',true),
+  'f-empreendedor': ()=>_vCampo('f-empreendedor',{required:true,minLen:2,maxLen:200}),
+  'f-contato'     : ()=>_vCampo('f-contato',{required:true,maxLen:200,
+                      checks:[{test:v=>VRE.email.test(v)||VRE.tel.test(v.replace(/\s/g,'')),
+                               msg:'Informe um e-mail ou telefone válido.'}]}),
+  'f-municipio'   : ()=>_vCampo('f-municipio',{required:true,maxLen:100}),
+  'f-segmento-form':()=>_vSelect('f-segmento-form',true),
+  'f-data-fundacao':()=>_vData('f-data-fundacao',{naoFutura:true}),
+
+  /* Sec 02 — Identificação e Localização */
+  'f-razao-social' : ()=>_vCampo('f-razao-social',{maxLen:200}),
+  'f-nome-fantasia': ()=>_vCampo('f-nome-fantasia',{maxLen:200}),
+  'f-cnpj'         : ()=>_vCampo('f-cnpj',{maxLen:18,
+                       checks:[{test:v=>_cnpjValido(v),msg:VMSG.cnpj}]}),
+  'f-data-abertura': ()=>_vData('f-data-abertura',{naoFutura:true}),
+  'f-tipo-unidade' : ()=>_vSelect('f-tipo-unidade',false),
+  'f-ie'           : ()=>_vCampo('f-ie',{maxLen:50,
+                       checks:[{test:v=>VRE.alfanum.test(v),msg:VMSG.alfanum}]}),
+  'f-im'           : ()=>_vCampo('f-im',{maxLen:50,
+                       checks:[{test:v=>VRE.alfanum.test(v),msg:VMSG.alfanum}]}),
+  'f-telefone'     : ()=>_vCampo('f-telefone',{maxLen:50,
+                       checks:[{test:v=>VRE.tel.test(v.replace(/\s/g,'')),msg:VMSG.telefone}]}),
+  'f-email-nfe'    : ()=>_vCampo('f-email-nfe',{maxLen:200,
+                       checks:[{test:v=>VRE.email.test(v),msg:VMSG.email}]}),
+  'f-responsavel'  : ()=>_vCampo('f-responsavel',{maxLen:200}),
+  'f-endereco'     : ()=>_vCampo('f-endereco',{maxLen:500}),
+  'f-link-maps'    : ()=>_vCampo('f-link-maps',{maxLen:500,
+                       checks:[{test:v=>VRE.url.test(v)||VRE.latLng.test(v),msg:VMSG.url}]}),
+
+  /* Sec 03 — Fiscal / Financeiro */
+  'f-regime'     : ()=>_vSelect('f-regime',false),
+  'f-cnae'       : ()=>_vCampo('f-cnae',{maxLen:30,
+                     checks:[{test:v=>VRE.cnae.test(v),msg:VMSG.cnae}]}),
+  'f-faturamento': ()=>_vCampo('f-faturamento',{maxLen:100}),
+  'f-capital'    : ()=>_vCampo('f-capital',{maxLen:100}),
+  'f-pep'        : ()=>_vSelect('f-pep',false),
+  'f-prazo'      : ()=>_vCampo('f-prazo',{maxLen:100}),
+  'f-banco'      : ()=>_vCampo('f-banco',{maxLen:300}),
+
+  /* Sec 04 — Agronegócio */
+  'f-agro-car'   : ()=>_vCampo('f-agro-car',{maxLen:100,
+                     checks:[{test:v=>VRE.car.test(v),msg:VMSG.car}]}),
+  'f-agro-mapa'  : ()=>_vCampo('f-agro-mapa',{maxLen:200}),
+
+  /* Sec 06 — Descrição */
+  'f-descricao'  : ()=>_vCampo('f-descricao',{maxLen:1000}),
+};
+
+function validarFormulario(){
+  let ok=true;
+  Object.values(_REGRAS).forEach(fn=>{if(!fn())ok=false;});
+  return ok;
+}
+
 async function salvar(){
-  const campos=['f-nome','f-empreendedor','f-municipio','f-contato'];
-  let valido=true;
-  campos.forEach(id=>{
-    const el=document.getElementById(id);
-    el.classList.toggle('is-invalid',!el.value.trim());
-    if(!el.value.trim()) valido=false;
-  });
-  const seg=document.getElementById('f-segmento-form');
-  seg.classList.toggle('is-invalid',!seg.value);
-  if(!seg.value) valido=false;
-  if(!valido) return;
+  if(!validarFormulario()) return;
 
   const v  =id=>document.getElementById(id)?.value.trim()||null;
   const vs =id=>document.getElementById(id)?.value||null;
@@ -1766,6 +1924,7 @@ async function salvar(){
     serv_portfolio: v('f-serv-port'),
     // setor — Agronegócio
     agro_car:       v('f-agro-car'),
+    agro_mapa:      v('f-agro-mapa'),
     agro_armazenagem:v('f-agro-arm'),
     // documentação e descrição
     checklist_docs: v('f-checklist'),
@@ -2011,6 +2170,9 @@ function limparForm(){
 
   // char counter
   document.getElementById('char-count').textContent='0';
+
+  // limpar estados de validação
+  Object.keys(_REGRAS).forEach(id=>_limpar(id));
 
   // ocultar todas as seções condicionais de setor
   atualizarSecSetor('');
